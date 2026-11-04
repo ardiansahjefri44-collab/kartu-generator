@@ -1,1811 +1,1841 @@
-import React, { useState, useEffect, useRef } from 'react';
-
-// Safe SVG Icon Components (Zero dependency risk)
-const Sun = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M18.36 5.64l1.41-1.41"/></svg>
-);
-const Moon = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-);
-const Upload = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-);
-const Trash2 = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-);
-const Copy = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-);
-const Printer = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
-);
-const FileSpreadsheet = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M10 9h.01"/></svg>
-);
-const Users = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-);
-const Edit3 = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-);
-const LayoutDashboard = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-);
-const Eye = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-);
-const History = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
-);
-const CheckCircle = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-);
-const AlertTriangle = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
-);
-const Sparkles = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
-);
-const FileDown = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
-);
-const RefreshCw = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-);
-const Search = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
-);
-const CheckSquare = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-);
-const Square = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
-);
-const Image = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
-);
-const QrCode = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01 font-normal"/></svg>
-);
-const Type = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
-);
-const Sliders = (props) => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
-);
-
-const DEFAULT_STUDENTS = [
-  { id: 1, nama: 'AHMAD FAUZI', kelas: 'XII MIPA 1', ruang: '01', noPeserta: '2026-1201', photo: null },
-  { id: 2, nama: 'SITI AMINAH', kelas: 'XII MIPA 2', ruang: '02', noPeserta: '2026-1202', photo: null },
-  { id: 3, nama: 'MUHAMMAD RIZKY', kelas: 'XII IPS 1', ruang: '03', noPeserta: '2026-1203', photo: null },
-  { id: 4, nama: 'DEWI LESTARI', kelas: 'XII IPS 2', ruang: '04', noPeserta: '2026-1204', photo: null }
-];
-
-const DEFAULT_DESIGN = {
-  id: 'default-1',
-  name: 'Desain Kartu Pelajar Modern',
-  widthMm: 85.6,
-  heightMm: 54,
-  orientation: 'landscape',
-  background: {
-    type: 'color',
-    color: '#0f172a',
-    gradient: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
-    image: null,
-    fit: 'cover'
-  },
-  elements: [
-    { id: 'header-bg', type: 'shape', name: 'Header Banner', x: 0, y: 0, width: 324, height: 48, fill: '#2563eb', opacity: 100, borderRadius: 0, locked: false, zIndex: 1 },
-    { id: 'header-title', type: 'text', name: 'Nama Sekolah Header', content: 'SMA NEGERI 1 INDONESIA', x: 12, y: 12, fontSize: 12, fontWeight: 'bold', fontFamily: 'Inter', color: '#ffffff', textAlign: 'left', locked: false, zIndex: 2 },
-    { id: 'header-subtitle', type: 'text', name: 'Subtitle Header', content: 'KARTU TANDA PELAJAR', x: 12, y: 28, fontSize: 8, fontWeight: 'normal', fontFamily: 'Inter', color: '#93c5fd', textAlign: 'left', locked: false, zIndex: 2 },
-    { id: 'photo-frame', type: 'photo', name: 'Frame Foto Siswa', x: 16, y: 60, width: 75, height: 100, borderColor: '#3b82f6', borderWidth: 2, borderRadius: 6, locked: false, zIndex: 2 },
-    { id: 'label-nama', type: 'placeholder', name: 'Placeholder Nama', content: '[NAMA]', x: 105, y: 62, fontSize: 13, fontWeight: 'bold', fontFamily: 'Inter', color: '#f8fafc', locked: false, zIndex: 2 },
-    { id: 'label-kelas', type: 'placeholder', name: 'Placeholder Kelas', content: 'Kelas: [KELAS]', x: 105, y: 84, fontSize: 10, fontWeight: 'normal', fontFamily: 'Inter', color: '#cbd5e1', locked: false, zIndex: 2 },
-    { id: 'label-ruang', type: 'placeholder', name: 'Placeholder Ruang', content: 'Ruang: [NOMOR RUANG]', x: 105, y: 102, fontSize: 10, fontWeight: 'normal', fontFamily: 'Inter', color: '#cbd5e1', locked: false, zIndex: 2 },
-    { id: 'label-peserta', type: 'placeholder', name: 'Placeholder No Peserta', content: 'No. Peserta: [NOMOR PESERTA]', x: 105, y: 120, fontSize: 10, fontWeight: 'bold', fontFamily: 'Inter', color: '#60a5fa', locked: false, zIndex: 2 },
-    { id: 'qr-code', type: 'qrcode', name: 'QR Code Siswa', x: 252, y: 110, width: 50, height: 50, locked: false, zIndex: 2 }
-  ]
-};
-
-export default function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [notifications, setNotifications] = useState([]);
-  const [selectedElementId, setSelectedElementId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [previewStudentIdx, setPreviewStudentIdx] = useState(0);
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [isLibsReady, setIsLibsReady] = useState(false);
-
-  // Persistence State Initializer from localStorage
-  const [students, setStudents] = useState(() => {
-    try {
-      const saved = localStorage.getItem('kartu_pelajar_students');
-      return saved ? JSON.parse(saved) : DEFAULT_STUDENTS;
-    } catch {
-      return DEFAULT_STUDENTS;
-    }
-  });
-
-  const [cardDesign, setCardDesign] = useState(() => {
-    try {
-      const saved = localStorage.getItem('kartu_pelajar_design');
-      return saved ? JSON.parse(saved) : DEFAULT_DESIGN;
-    } catch {
-      return DEFAULT_DESIGN;
-    }
-  });
-
-  const [savedDesigns, setSavedDesigns] = useState(() => {
-    try {
-      const saved = localStorage.getItem('kartu_pelajar_templates');
-      return saved ? JSON.parse(saved) : [DEFAULT_DESIGN];
-    } catch {
-      return [DEFAULT_DESIGN];
-    }
-  });
-
-  // Auto-save changes to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem('kartu_pelajar_students', JSON.stringify(students));
-    } catch (e) { console.error('LocalStorage error', e); }
-  }, [students]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('kartu_pelajar_design', JSON.stringify(cardDesign));
-    } catch (e) { console.error('LocalStorage error', e); }
-  }, [cardDesign]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem('kartu_pelajar_templates', JSON.stringify(savedDesigns));
-    } catch (e) { console.error('LocalStorage error', e); }
-  }, [savedDesigns]);
-
-  // Auto-load external CDN libraries seamlessly
-  useEffect(() => {
-    const loadScript = (src) => {
-      return new Promise((resolve) => {
-        if (document.querySelector(`script[src="${src}"]`)) return resolve();
-        const s = document.createElement('script');
-        s.src = src;
-        s.onload = () => resolve();
-        document.head.appendChild(s);
-      });
-    };
-
-    Promise.all([
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
-      loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
-    ]).then(() => {
-      setIsLibsReady(true);
-    });
-  }, []);
-
-  const addNotification = (text, type = 'info') => {
-    const id = `notif-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    setNotifications((prev) => [...prev, { id, text, type }]);
-    setTimeout(() => {
-      setNotifications((prev) => prev.filter((n) => n.id !== id));
-    }, 4000);
-  };
-
-  const renderPlaceholderText = (text, student) => {
-    if (!text || typeof text !== 'string') return '';
-    const st = student || students[0] || { nama: 'Fulan', kelas: 'X-1', ruang: '01', noPeserta: '0000' };
-    return text
-      .replace(/\[NAMA\]/g, st.nama)
-      .replace(/\[KELAS\]/g, st.kelas)
-      .replace(/\[NOMOR RUANG\]/g, st.ruang)
-      .replace(/\[NOMOR PESERTA\]/g, st.noPeserta);
-  };
-
-  const saveCurrentTemplate = () => {
-    const existingIdx = savedDesigns.findIndex((d) => d.id === cardDesign.id);
-    let updated;
-    if (existingIdx >= 0) {
-      updated = [...savedDesigns];
-      updated[existingIdx] = cardDesign;
-    } else {
-      updated = [...savedDesigns, cardDesign];
-    }
-    setSavedDesigns(updated);
-    addNotification(`Template "${cardDesign.name}" tersimpan secara permanen!`, 'success');
-  };
-
-  // Set Current Design as Permanent Custom Default
-  const setAsDefaultTemplate = () => {
-    try {
-      localStorage.setItem('kartu_pelajar_default_template', JSON.stringify(cardDesign));
-      saveCurrentTemplate();
-      addNotification('Desain saat ini berhasil dijadikan Template Standar Default!', 'success');
-    } catch (e) {
-      addNotification('Gagal menyimpan template default', 'error');
-    }
-  };
-
-  // Reset Application Data
-  const resetToDefaultData = () => {
-    if (window.confirm('Apakah Anda yakin ingin mereset seluruh data siswa dan desain ke pengaturan awal?')) {
-      const customDefault = localStorage.getItem('kartu_pelajar_default_template');
-      const baseDesign = customDefault ? JSON.parse(customDefault) : DEFAULT_DESIGN;
-      
-      setStudents(DEFAULT_STUDENTS);
-      setCardDesign(baseDesign);
-      setSavedDesigns([baseDesign]);
-      localStorage.removeItem('kartu_pelajar_students');
-      localStorage.removeItem('kartu_pelajar_design');
-      addNotification('Data berhasil di-reset ke template standar default', 'info');
-    }
-  };
-
-  return (
-    <div className={`min-h-screen font-sans antialiased transition-colors duration-300 ${isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
-      {/* GLOBAL NAVBAR */}
-      <header className={`sticky top-0 z-40 border-b backdrop-blur-md ${isDarkMode ? 'bg-slate-950/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
-              <Sparkles className="w-5 h-5" />
-            </div>
-            <div>
-              <h1 className="font-bold text-sm tracking-wide bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                KartuPelajarPro
-              </h1>
-              <p className="text-[10px] opacity-60">Generator Massal & Studio Desain</p>
-            </div>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800/80">
-            <NavItem label="Dashboard" icon={<LayoutDashboard className="w-4 h-4"/>} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-            <NavItem label="Editor Desain" icon={<Edit3 className="w-4 h-4"/>} active={activeTab === 'editor'} onClick={() => setActiveTab('editor')} />
-            <NavItem label="Import Excel" icon={<FileSpreadsheet className="w-4 h-4"/>} active={activeTab === 'import'} onClick={() => setActiveTab('import')} />
-            <NavItem label="Data Pelajar" icon={<Users className="w-4 h-4"/>} active={activeTab === 'data'} onClick={() => setActiveTab('data')} />
-            <NavItem label="Preview Massal" icon={<Eye className="w-4 h-4"/>} active={activeTab === 'preview'} onClick={() => setActiveTab('preview')} />
-            <NavItem label="Pengaturan Cetak" icon={<Printer className="w-4 h-4"/>} active={activeTab === 'print'} onClick={() => setActiveTab('print')} />
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`p-2 rounded-xl border transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 text-amber-400 hover:bg-slate-800' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'}`}
-              title="Toggle Mode Terang/Gelap"
-            >
-              {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </button>
-            <button
-              onClick={setAsDefaultTemplate}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all"
-              title="Jadikan Desain Ini Sebagai Template Default Permanen"
-            >
-              Set Default
-            </button>
-            <button
-              onClick={saveCurrentTemplate}
-              className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
-            >
-              Simpan Desain
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* NOTIFICATION SYSTEM */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
-        {notifications.map((n) => (
-          <div
-            key={n.id}
-            className={`pointer-events-auto px-4 py-3 rounded-xl border shadow-xl text-xs font-medium flex items-center gap-2.5 animate-bounce-short ${
-              n.type === 'success'
-                ? 'bg-emerald-950/90 border-emerald-800 text-emerald-200'
-                : n.type === 'error'
-                ? 'bg-rose-950/90 border-rose-800 text-rose-200'
-                : 'bg-blue-950/90 border-blue-800 text-blue-200'
-            }`}
-          >
-            {n.type === 'success' && <CheckCircle className="w-4 h-4 text-emerald-400" />}
-            {n.type === 'error' && <AlertTriangle className="w-4 h-4 text-rose-400" />}
-            {n.type === 'info' && <Sparkles className="w-4 h-4 text-blue-400" />}
-            <span>{n.text}</span>
-          </div>
-        ))}
-      </div>
-
-      {/* MAIN CONTAINER CONTENT VIEW */}
-      <main className="pb-16">
-        {activeTab === 'dashboard' && (
-          <DashboardView
-            studentsCount={students.length}
-            savedCount={savedDesigns.length}
-            setActiveTab={setActiveTab}
-            isDarkMode={isDarkMode}
-            resetToDefaultData={resetToDefaultData}
-          />
-        )}
-        {activeTab === 'editor' && (
-          <CardEditorView
-            cardDesign={cardDesign}
-            setCardDesign={setCardDesign}
-            students={students}
-            previewStudentIdx={previewStudentIdx}
-            renderPlaceholderText={renderPlaceholderText}
-            addNotification={addNotification}
-            isDarkMode={isDarkMode}
-          />
-        )}
-        {activeTab === 'import' && (
-          <ExcelImportView
-            students={students}
-            setStudents={setStudents}
-            addNotification={addNotification}
-            setActiveTab={setActiveTab}
-            isDarkMode={isDarkMode}
-          />
-        )}
-        {activeTab === 'data' && (
-          <StudentDataView
-            students={students}
-            setStudents={setStudents}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            addNotification={addNotification}
-            isDarkMode={isDarkMode}
-          />
-        )}
-        {activeTab === 'preview' && (
-          <BulkPreviewView
-            cardDesign={cardDesign}
-            students={students}
-            previewStudentIdx={previewStudentIdx}
-            setPreviewStudentIdx={setPreviewStudentIdx}
-            renderPlaceholderText={renderPlaceholderText}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            isDarkMode={isDarkMode}
-          />
-        )}
-        {activeTab === 'print' && (
-          <PrintSetupView
-            cardDesign={cardDesign}
-            students={students}
-            renderPlaceholderText={renderPlaceholderText}
-            addNotification={addNotification}
-            isDarkMode={isDarkMode}
-          />
-        )}
-      </main>
-    </div>
-  );
-}
-
-// NAVIGATION ITEM COMPONENT
-function NavItem({ label, icon, active, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-        active
-          ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-    </button>
-  );
-}
-
-// DASHBOARD VIEW COMPONENT
-function DashboardView({ studentsCount, savedCount, setActiveTab, isDarkMode, resetToDefaultData }) {
-  return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
-      <div className={`p-8 rounded-3xl border relative overflow-hidden ${isDarkMode ? 'bg-gradient-to-r from-blue-950/60 via-slate-900 to-indigo-950/40 border-blue-900/40' : 'bg-gradient-to-r from-blue-50 via-white to-indigo-50 border-blue-200 shadow-sm'}`}>
-        <div className="max-w-2xl space-y-4">
-          <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/20">
-            Sistem Pembuat Kartu Pelajar Massal
-          </span>
-          <h2 className="text-3xl font-extrabold tracking-tight">Cetak Ratusan Kartu Pelajar Secara Instan</h2>
-          <p className={`text-sm leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-            Unggah file Excel data siswa, atur desain dengan kanvas Drag and Drop, dan hasilkan PDF siap cetak dengan ukuran nyata yang presisi.
-          </p>
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <button
-              onClick={() => setActiveTab('import')}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/25 flex items-center gap-2 transition-all"
-            >
-              <FileSpreadsheet className="w-4 h-4" />
-              Import Excel Data Siswa
-            </button>
-            <button
-              onClick={() => setActiveTab('editor')}
-              className={`px-5 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100'}`}
-            >
-              <Edit3 className="w-4 h-4" />
-              Buka Studio Desain
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-          <div className="flex items-center justify-between pb-4">
-            <span className="text-xs font-semibold text-slate-400">Total Siswa Terdaftar</span>
-            <Users className="w-5 h-5 text-blue-400" />
-          </div>
-          <p className="text-3xl font-bold">{studentsCount}</p>
-          <p className="text-[11px] text-slate-400 pt-2">Siap di-generate menjadi kartu pelajar</p>
-        </div>
-
-        <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-          <div className="flex items-center justify-between pb-4">
-            <span className="text-xs font-semibold text-slate-400">Template Desain Tersimpan</span>
-            <Sparkles className="w-5 h-5 text-indigo-400" />
-          </div>
-          <p className="text-3xl font-bold">{savedCount}</p>
-          <p className="text-[11px] text-slate-400 pt-2">Tersimpan di memori browser lokal</p>
-        </div>
-
-        <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-          <div className="flex items-center justify-between pb-4">
-            <span className="text-xs font-semibold text-slate-400">Status Penyimpanan Data</span>
-            <CheckCircle className="w-5 h-5 text-emerald-400" />
-          </div>
-          <p className="text-base font-bold text-emerald-400">Permanen (LocalStorage)</p>
-          <button
-            onClick={resetToDefaultData}
-            className="mt-3 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-all flex items-center gap-1.5"
-          >
-            <RefreshCw className="w-3 h-3" />
-            Reset Data Ke Standar
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// CARD DESIGN EDITOR VIEW COMPONENT
-function CardEditorView({ cardDesign, setCardDesign, students, previewStudentIdx, renderPlaceholderText, addNotification, isDarkMode }) {
-  const currentStudent = students[previewStudentIdx] || students[0] || { nama: 'Fulan', kelas: 'X-1', ruang: '01', noPeserta: '0000' };
-  const [selectedId, setSelectedId] = useState(null);
-
-  const selectedElement = cardDesign.elements.find((el) => el.id === selectedId);
-
-  const updateSelectedElement = (key, val) => {
-    if (!selectedId) return;
-    setCardDesign((prev) => ({
-      ...prev,
-      elements: prev.elements.map((el) => (el.id === selectedId ? { ...el, [key]: val } : el))
-    }));
-  };
-
-  const updateBackground = (bgData) => {
-    setCardDesign((prev) => ({
-      ...prev,
-      background: { ...prev.background, ...bgData }
-    }));
-  };
-
-  const addTextElement = (text, type = 'text') => {
-    const newEl = {
-      id: `el-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-      type: type,
-      name: type === 'placeholder' ? text : 'Teks Baru',
-      content: text,
-      x: 20,
-      y: 20,
-      fontSize: 12,
-      fontWeight: 'normal',
-      fontFamily: 'Inter',
-      color: '#ffffff',
-      textAlign: 'left',
-      locked: false,
-      zIndex: cardDesign.elements.length + 1
-    };
-    setCardDesign((prev) => ({ ...prev, elements: [...prev.elements, newEl] }));
-    setSelectedId(newEl.id);
-  };
-
-  const handleCustomImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const src = evt.target.result;
-      const newEl = {
-        id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-        type: 'image',
-        name: file.name,
-        src: src,
-        x: 30,
-        y: 30,
-        width: 60,
-        height: 60,
-        opacity: 100,
-        locked: false,
-        zIndex: cardDesign.elements.length + 1
-      };
-      setCardDesign((prev) => ({ ...prev, elements: [...prev.elements, newEl] }));
-      setSelectedId(newEl.id);
-      addNotification('Gambar berhasil diunggah ke kanvas!', 'success');
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleBackgroundUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      updateBackground({ type: 'image', image: evt.target.result });
-      addNotification('Background gambar dari laptop berhasil diterapkan!', 'success');
-    };
-    reader.readAsDataURL(file);
-  };
-
-  return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] overflow-hidden">
-      {/* LEFT PANEL TOOLBAR */}
-      <div className={`w-full lg:w-72 border-r p-4 overflow-y-auto space-y-6 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Tambah Elemen</h3>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => addTextElement('Teks Tambahan', 'text')}
-              className="p-2.5 rounded-xl border border-slate-800 hover:bg-blue-600/10 text-xs font-semibold flex flex-col items-center gap-1.5 transition-all"
-            >
-              <Type className="w-4 h-4 text-blue-400" />
-              Teks Baru
-            </button>
-            <button
-              onClick={() => addTextElement('[NAMA]', 'placeholder')}
-              className="p-2.5 rounded-xl border border-slate-800 hover:bg-blue-600/10 text-xs font-semibold flex flex-col items-center gap-1.5 transition-all"
-            >
-              <Sliders className="w-4 h-4 text-indigo-400" />
-              Tag Dynamic
-            </button>
-          </div>
-        </div>
-
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Import Gambar / Logo</h3>
-          <label className="w-full p-3 rounded-xl border border-dashed border-blue-500/40 hover:bg-blue-500/5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all">
-            <Image className="w-4 h-4 text-blue-400" />
-            <span>Upload Logo / Gambar</span>
-            <input type="file" accept="image/*" className="hidden" onChange={handleCustomImageUpload} />
-          </label>
-        </div>
-
-        <div>
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Background Kartu</h3>
-          <div className="space-y-3">
-            <select
-              value={cardDesign.background.type}
-              onChange={(e) => updateBackground({ type: e.target.value })}
-              className={`w-full p-2 rounded-xl text-xs border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-            >
-              <option value="color">Warna Solid</option>
-              <option value="gradient">Gradient Modern</option>
-              <option value="image">Gambar Custom (Laptop)</option>
-            </select>
-
-            {cardDesign.background.type === 'color' && (
-              <input
-                type="color"
-                value={cardDesign.background.color}
-                onChange={(e) => updateBackground({ color: e.target.value })}
-                className="w-full h-8 rounded-lg cursor-pointer bg-transparent border-0"
-              />
-            )}
-
-            {cardDesign.background.type === 'image' && (
-              <label className="w-full p-2.5 rounded-xl border border-slate-800 hover:bg-slate-900 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer">
-                <Upload className="w-4 h-4 text-emerald-400" />
-                <span>Pilih File Gambar Laptop</span>
-                <input type="file" accept="image/*" className="hidden" onChange={handleBackgroundUpload} />
-              </label>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* CENTER EDITOR CANVAS */}
-      <div className="flex-1 bg-slate-900/50 p-8 flex items-center justify-center overflow-auto relative">
-        <div
-          className="relative shadow-2xl rounded-xl overflow-hidden transition-all select-none border border-slate-700/50"
-          style={{
-            width: `${cardDesign.widthMm * 3.78}px`,
-            height: `${cardDesign.heightMm * 3.78}px`,
-            background:
-              cardDesign.background.type === 'color'
-                ? cardDesign.background.color
-                : cardDesign.background.type === 'gradient'
-                ? cardDesign.background.gradient
-                : undefined
-          }}
-        >
-          {cardDesign.background.type === 'image' && cardDesign.background.image && (
-            <img
-              src={cardDesign.background.image}
-              alt="Background"
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            />
-          )}
-
-          {cardDesign.elements.map((el) => {
-            const isSelected = el.id === selectedId;
-            return (
-              <div
-                key={el.id}
-                onClick={() => setSelectedId(el.id)}
-                className={`absolute cursor-move transition-shadow ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-slate-900' : ''}`}
-                style={{
-                  left: `${el.x}px`,
-                  top: `${el.y}px`,
-                  width: el.width ? `${el.width}px` : undefined,
-                  height: el.height ? `${el.height}px` : undefined,
-                  zIndex: el.zIndex || 1
-                }}
-              >
-                {el.type === 'shape' && (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      backgroundColor: el.fill,
-                      opacity: (el.opacity || 100) / 100,
-                      borderRadius: `${el.borderRadius || 0}px`
-                    }}
-                  />
-                )}
-                {(el.type === 'text' || el.type === 'placeholder') && (
-                  <div
-                    style={{
-                      fontSize: `${el.fontSize}px`,
-                      fontWeight: el.fontWeight,
-                      fontFamily: el.fontFamily,
-                      color: el.color,
-                      textAlign: el.textAlign
-                    }}
-                  >
-                    {renderPlaceholderText(el.content, currentStudent)}
-                  </div>
-                )}
-                {el.type === 'photo' && (
-                  <div
-                    className="bg-slate-800/80 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-blue-500/40"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: `${el.borderRadius || 4}px`
-                    }}
-                  >
-                    FOTO SISWA
-                  </div>
-                )}
-                {el.type === 'image' && (
-                  <img
-                    src={el.src}
-                    alt={el.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                      opacity: (el.opacity || 100) / 100
-                    }}
-                  />
-                )}
-                {el.type === 'qrcode' && (
-                  <div className="bg-white p-1 rounded flex items-center justify-center shadow-md" style={{ width: '100%', height: '100%' }}>
-                    <QrCode className="w-full h-full text-slate-900" />
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* RIGHT INSPECTOR PANEL */}
-      <div className={`w-full lg:w-80 border-l p-4 overflow-y-auto space-y-6 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
-        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Pengaturan Elemen</h3>
-        {selectedElement ? (
-          <div className="space-y-4 text-xs">
-            <div>
-              <label className="text-slate-400 block mb-1">Nama Layer / Elemen</label>
-              <input
-                type="text"
-                value={selectedElement.name || ''}
-                onChange={(e) => updateSelectedElement('name', e.target.value)}
-                className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className="text-slate-400 block mb-1">Posisi X (px)</label>
-                <input
-                  type="number"
-                  value={selectedElement.x}
-                  onChange={(e) => updateSelectedElement('x', Number(e.target.value))}
-                  className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-                />
-              </div>
-              <div>
-                <label className="text-slate-400 block mb-1">Posisi Y (px)</label>
-                <input
-                  type="number"
-                  value={selectedElement.y}
-                  onChange={(e) => updateSelectedElement('y', Number(e.target.value))}
-                  className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-                />
-              </div>
-            </div>
-
-            {(selectedElement.type === 'text' || selectedElement.type === 'placeholder') && (
-              <>
-                <div>
-                  <label className="text-slate-400 block mb-1">Konten Teks</label>
-                  <input
-                    type="text"
-                    value={selectedElement.content}
-                    onChange={(e) => updateSelectedElement('content', e.target.value)}
-                    className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="text-slate-400 block mb-1">Ukuran Font</label>
-                    <input
-                      type="number"
-                      value={selectedElement.fontSize}
-                      onChange={(e) => updateSelectedElement('fontSize', Number(e.target.value))}
-                      className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
-                    />
-                  </div>
-                  <div>
-                    <label className="text-slate-400 block mb-1">Warna Teks</label>
-                    <input
-                      type="color"
-                      value={selectedElement.color || '#ffffff'}
-                      onChange={(e) => updateSelectedElement('color', e.target.value)}
-                      className="w-full h-8 rounded-lg cursor-pointer bg-transparent border-0"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <button
-              onClick={() => {
-                setCardDesign((prev) => ({
-                  ...prev,
-                  elements: prev.elements.filter((el) => el.id !== selectedId)
-                }));
-                setSelectedId(null);
-              }}
-              className="w-full py-2 rounded-xl bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 font-semibold flex items-center justify-center gap-1.5 transition-all mt-4"
-            >
-              <Trash2 className="w-4 h-4" />
-              Hapus Elemen Ini
-            </button>
-          </div>
-        ) : (
-          <p className="text-xs opacity-50">Klik salah satu elemen di kanvas untuk mengubah propertinya.</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// EXCEL IMPORT VIEW COMPONENT
-function ExcelImportView({ students, setStudents, addNotification, setActiveTab, isDarkMode }) {
-  const handleFileUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      try {
-        const data = new Uint8Array(evt.target.result);
-        const workbook = window.XLSX.read(data, { type: 'array' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = window.XLSX.utils.sheet_to_json(worksheet);
-
-        const mapped = json.map((row, idx) => ({
-          id: `st-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 7)}`,
-          nama: String(row.Nama || row.NAMA || row['Nama Siswa'] || 'SISWA ' + (idx + 1)).toUpperCase(),
-          kelas: String(row.Kelas || row.KELAS || 'XII MIPA 1'),
-          ruang: String(row.Ruang || row.RUANG || row['Nomor Ruang'] || '01'),
-          noPeserta: String(row.Peserta || row['No Peserta'] || row['Nomor Peserta'] || `2026-${1000 + idx}`),
-          photo: null
-        }));
-
-        setStudents(mapped);
-        addNotification(`Berhasil mengimpor ${mapped.length} data siswa!`, 'success');
-        setActiveTab('data');
-      } catch (err) {
-        addNotification('Gagal membaca file Excel! Pastikan format sesuai.', 'error');
-      }
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  return (
-    <div className="p-8 max-w-4xl mx-auto space-y-8 animate-fade-in">
-      <div className="text-center space-y-2">
-        <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Import Data Siswa dari Excel</h2>
-        <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-          Unggah file Excel (.xlsx / .xls) yang berisi data Nama, Kelas, Nomor Ruang, dan Nomor Peserta.
-        </p>
-      </div>
-
-      <div className={`p-12 rounded-3xl border-2 border-dashed text-center space-y-4 ${isDarkMode ? 'bg-slate-950/60 border-blue-500/30' : 'bg-white border-blue-300 shadow-sm'}`}>
-        <FileSpreadsheet className="w-12 h-12 text-blue-500 mx-auto animate-bounce-short" />
-        <div>
-          <label className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/20 cursor-pointer inline-flex items-center gap-2 transition-all">
-            <Upload className="w-4 h-4" />
-            Pilih File Excel Laptop (.xlsx)
-            <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleFileUpload} />
-          </label>
-        </div>
-        <p className="text-[11px] opacity-50">Dukungan format .xlsx dan .xls hingga ribuan data sekaligus.</p>
-      </div>
-    </div>
-  );
-}
-
-// 4. STUDENT DATA TABLE VIEW WITH BULK DELETE & SELECTION
-function StudentDataView({ students, setStudents, searchQuery, setSearchQuery, addNotification, isDarkMode }) {
-  const [selectedIds, setSelectedIds] = useState([]);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-
-  const filteredStudents = students.filter(
-    (s) =>
-      s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.noPeserta.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.kelas.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const isAllSelected = filteredStudents.length > 0 && selectedIds.length === filteredStudents.length;
-
-  const toggleSelectAll = () => {
-    if (isAllSelected) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredStudents.map((s) => s.id));
-    }
-  };
-
-  const toggleSelectOne = (id) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter((item) => item !== id));
-    } else {
-      setSelectedIds([...selectedIds, id]);
-    }
-  };
-
-  const deleteSingleStudent = (id) => {
-    const target = students.find((s) => s.id === id);
-    setStudents(students.filter((s) => s.id !== id));
-    setSelectedIds(selectedIds.filter((item) => item !== id));
-    addNotification(`Data "${target?.nama || 'Siswa'}" berhasil dihapus`, 'info');
-  };
-
-  const deleteSelectedStudents = () => {
-    setStudents(students.filter((s) => !selectedIds.includes(s.id)));
-    addNotification(`Berhasil menghapus ${selectedIds.length} data siswa terlipih!`, 'success');
-    setSelectedIds([]);
-  };
-
-  const deleteAllStudents = () => {
-    setStudents([]);
-    setSelectedIds([]);
-    setShowConfirmModal(false);
-    addNotification('Seluruh data siswa telah dikosongkan', 'info');
-  };
-
-  const addNewStudent = () => {
-    const newStudent = {
-      id: `st-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
-      nama: 'SISWA BARU',
-      kelas: 'XII MIPA 1',
-      ruang: '01',
-      noPeserta: `2026-${Math.floor(1000 + Math.random() * 9000)}`,
-      photo: null
-    };
-    setStudents([newStudent, ...students]);
-    addNotification('Siswa baru berhasil ditambahkan', 'success');
-  };
-
-  return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6">
-      {/* HEADER ACTIONS */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Data Pelajar ({students.length})</h2>
-          <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Data tersimpan otomatis di memori internal browser (Anti-hilang saat refresh).</p>
-        </div>
-        <div className="flex items-center gap-2">
-          {students.length > 0 && (
-            <button
-              onClick={() => setShowConfirmModal(true)}
-              className="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 flex items-center gap-1.5 transition-all"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              Kosongkan Semua Data
-            </button>
-          )}
-          <button
-            onClick={addNewStudent}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 shadow-md transition-all"
-          >
-            <Users className="w-4 h-4" />
-            Tambah Siswa Manual
-          </button>
-        </div>
-      </div>
-
-      {/* SEARCH & BULK ACTION BAR */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        <div className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border ${isDarkMode ? 'bg-slate-950 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'}`}>
-          <Search className="w-4 h-4 opacity-50" />
-          <input
-            type="text"
-            placeholder="Cari berdasarkan nama, kelas, atau nomor peserta..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-transparent text-xs outline-none"
-          />
-        </div>
-
-        {selectedIds.length > 0 && (
-          <button
-            onClick={deleteSelectedStudents}
-            className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-2 shadow-lg transition-all animate-fade-in"
-          >
-            <Trash2 className="w-4 h-4" />
-            Hapus ({selectedIds.length}) Siswa Terpilih
-          </button>
-        )}
-      </div>
-
-      {/* STUDENT TABLE */}
-      <div className={`overflow-hidden rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
-        <table className="w-full text-left text-xs">
-          <thead className={`border-b font-semibold select-none ${isDarkMode ? 'bg-slate-900/80 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
-            <tr>
-              <th className="p-3.5 w-10 text-center">
-                <button onClick={toggleSelectAll} className="p-1 hover:text-blue-400 transition-colors">
-                  {isAllSelected ? <CheckSquare className="w-4 h-4 text-blue-500" /> : <Square className="w-4 h-4 opacity-40" />}
-                </button>
-              </th>
-              <th className="p-3.5">No</th>
-              <th className="p-3.5">Nama Siswa</th>
-              <th className="p-3.5">Kelas</th>
-              <th className="p-3.5">Ruang</th>
-              <th className="p-3.5">No. Peserta</th>
-              <th className="p-3.5 text-right">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className={`divide-y ${isDarkMode ? 'divide-slate-800/60' : 'divide-slate-100'}`}>
-            {filteredStudents.length > 0 ? (
-              filteredStudents.map((s, idx) => {
-                const isSelected = selectedIds.includes(s.id);
-                return (
-                  <tr
-                    key={s.id}
-                    className={`transition-colors ${isSelected ? (isDarkMode ? 'bg-blue-900/20' : 'bg-blue-50') : 'hover:bg-blue-500/5'} ${
-                      isDarkMode ? 'text-slate-200' : 'text-slate-700'
-                    }`}
-                  >
-                    <td className="p-3.5 text-center">
-                      <button onClick={() => toggleSelectOne(s.id)} className="p-1 hover:text-blue-400 transition-colors">
-                        {isSelected ? <CheckSquare className="w-4 h-4 text-blue-500" /> : <Square className="w-4 h-4 opacity-40" />}
-                      </button>
-                    </td>
-                    <td className="p-3.5 opacity-60 font-mono">{idx + 1}</td>
-                    <td className="p-3.5 font-bold">{s.nama}</td>
-                    <td className="p-3.5">{s.kelas}</td>
-                    <td className="p-3.5">{s.ruang}</td>
-                    <td className="p-3.5 font-mono text-blue-400 font-semibold">{s.noPeserta}</td>
-                    <td className="p-3.5 text-right">
-                      <button
-                        onClick={() => deleteSingleStudent(s.id)}
-                        className="p-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 transition-colors"
-                        title="Hapus Siswa Satuan"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td colSpan={7} className="p-8 text-center opacity-50">Tidak ada data siswa yang cocok.</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* CONFIRMATION MODAL FOR DELETE ALL */}
-      {showConfirmModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className={`max-w-md w-full rounded-2xl p-6 border shadow-2xl space-y-4 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
-            <div className="flex items-center gap-3 text-rose-500">
-              <AlertTriangle className="w-6 h-6" />
-              <h3 className="font-bold text-base">Konfirmasi Hapus Semua Data</h3>
-            </div>
-            <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-              Apakah Anda yakin ingin mengosongkan seluruh ({students.length}) data siswa? Tindakan ini tidak dapat dibatalkan.
-            </p>
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                onClick={() => setShowConfirmModal(false)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold ${isDarkMode ? 'bg-slate-900 hover:bg-slate-800 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
-              >
-                Batal
-              </button>
-              <button
-                onClick={deleteAllStudents}
-                className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg"
-              >
-                Ya, Hapus Semua Data
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// BULK PREVIEW VIEW COMPONENT
-function BulkPreviewView({ cardDesign, students, previewStudentIdx, setPreviewStudentIdx, renderPlaceholderText, searchQuery, setSearchQuery, isDarkMode }) {
-  const currentStudent = students[previewStudentIdx] || students[0];
-
-  return (
-    <div className="p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Preview Hasil Kartu Massal</h2>
-        <div className="flex items-center gap-3 text-xs">
-          <button
-            disabled={previewStudentIdx === 0}
-            onClick={() => setPreviewStudentIdx((p) => p - 1)}
-            className="px-3 py-1.5 rounded-xl border border-slate-800 disabled:opacity-40"
-          >
-            Sebelumnya
-          </button>
-          <span>Siswa {previewStudentIdx + 1} dari {students.length}</span>
-          <button
-            disabled={previewStudentIdx >= students.length - 1}
-            onClick={() => setPreviewStudentIdx((p) => p + 1)}
-            className="px-3 py-1.5 rounded-xl border border-slate-800 disabled:opacity-40"
-          >
-            Berikutnya
-          </button>
-        </div>
-      </div>
-
-      {currentStudent && (
-        <div className="flex justify-center py-12">
-          <div
-            className="relative shadow-2xl rounded-xl overflow-hidden border border-slate-700/50"
-            style={{
-              width: `${cardDesign.widthMm * 3.78}px`,
-              height: `${cardDesign.heightMm * 3.78}px`,
-              background:
-                cardDesign.background.type === 'color'
-                  ? cardDesign.background.color
-                  : cardDesign.background.type === 'gradient'
-                  ? cardDesign.background.gradient
-                  : undefined
-            }}
-          >
-            {cardDesign.background.type === 'image' && cardDesign.background.image && (
-              <img
-                src={cardDesign.background.image}
-                alt="Background"
-                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-              />
-            )}
-
-            {cardDesign.elements.map((el) => (
-              <div
-                key={el.id}
-                className="absolute"
-                style={{
-                  left: `${el.x}px`,
-                  top: `${el.y}px`,
-                  width: el.width ? `${el.width}px` : undefined,
-                  height: el.height ? `${el.height}px` : undefined,
-                  zIndex: el.zIndex || 1
-                }}
-              >
-                {el.type === 'shape' && (
-                  <div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      backgroundColor: el.fill,
-                      opacity: (el.opacity || 100) / 100,
-                      borderRadius: `${el.borderRadius || 0}px`
-                    }}
-                  />
-                )}
-                {(el.type === 'text' || el.type === 'placeholder') && (
-                  <div
-                    style={{
-                      fontSize: `${el.fontSize}px`,
-                      fontWeight: el.fontWeight,
-                      fontFamily: el.fontFamily,
-                      color: el.color,
-                      textAlign: el.textAlign
-                    }}
-                  >
-                    {renderPlaceholderText(el.content, currentStudent)}
-                  </div>
-                )}
-                {el.type === 'photo' && (
-                  <div
-                    className="bg-slate-800 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-blue-500/40"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: `${el.borderRadius || 4}px`
-                    }}
-                  >
-                    FOTO
-                  </div>
-                )}
-                {el.type === 'image' && (
-                  <img src={el.src} alt={el.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                )}
-                {el.type === 'qrcode' && (
-                  <div className="bg-white p-1 rounded flex items-center justify-center" style={{ width: '100%', height: '100%' }}>
-                    <QrCode className="w-full h-full text-slate-900" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// PRINT SETUP & HIGH-DPI PDF EXPORT VIEW COMPONENT
-function PrintSetupView({ cardDesign, students, renderPlaceholderText, addNotification, isDarkMode }) {
-  const [paperSize, setPaperSize] = useState('a4');
-  const [customWidthMm, setCustomWidthMm] = useState(210);
-  const [customHeightMm, setCustomHeightMm] = useState(297);
-  const [marginTopMm, setMarginTopMm] = useState(10);
-  const [marginLeftMm, setMarginLeftMm] = useState(10);
-  const [gapXMm, setGapXMm] = useState(4);
-  const [gapYMm, setGapYMm] = useState(4);
-  const [cols, setCols] = useState(2);
-  const [rows, setRows] = useState(5);
-  const [gridAlign, setGridAlign] = useState('center');
-  const [offsetX, setOffsetX] = useState(0);
-  const [offsetY, setOffsetY] = useState(0);
-  const [showCropMarks, setShowCropMarks] = useState(true);
-  const [activePreviewPage, setActivePreviewPage] = useState(0);
-  const [isExporting, setIsExporting] = useState(false);
-
-  // Paper Dimensions calculation in mm
-  const getPaperDimensions = () => {
-    if (paperSize === 'a4') return { w: 210, h: 297 };
-    if (paperSize === 'letter') return { w: 216, h: 279 };
-    if (paperSize === 'f4') return { w: 215, h: 330 };
-    return { w: Number(customWidthMm) || 210, h: Number(customHeightMm) || 297 };
-  };
-
-  const currentPaper = getPaperDimensions();
-  const cardsPerPage = Math.max(1, cols * rows);
-  const totalPages = Math.ceil(students.length / cardsPerPage) || 1;
-  const currentPageStudents = students.slice(
-    activePreviewPage * cardsPerPage,
-    (activePreviewPage + 1) * cardsPerPage
-  );
-
-  // Scale factor to display paper nicely inside preview container (e.g. 2.2px per mm)
-  const previewScale = 2.0;
-
-  // Calculate start positions with offset & alignment
-  const totalGridWidth = cols * cardDesign.widthMm + (cols - 1) * gapXMm;
-  const computedMarginLeft =
-    gridAlign === 'center'
-      ? (currentPaper.w - totalGridWidth) / 2 + Number(offsetX)
-      : Number(marginLeftMm) + Number(offsetX);
-  const computedMarginTop = Number(marginTopMm) + Number(offsetY);
-
-  // Direct Browser Print Function
-  const handleDirectPrint = () => {
-    window.print();
-  };
-
-  const exportPDF = async () => {
-    if (!window.jspdf || !window.html2canvas) {
-      addNotification('Library PDF sedang memuat, silakan tunggu sebentar...', 'error');
-      return;
-    }
-
-    setIsExporting(true);
-    addNotification('Sedang membuat berkas PDF High-DPI Siap Cetak...', 'info');
-
-    try {
-      const { jsPDF } = window.jspdf;
-      const paperW = Number(currentPaper.w) || 210;
-      const paperH = Number(currentPaper.h) || 297;
-
-      const pdf = new jsPDF({
-        orientation: paperW > paperH ? 'l' : 'p',
-        unit: 'mm',
-        format: [paperW, paperH]
-      });
-
-      for (let p = 0; p < totalPages; p++) {
-        if (p > 0) pdf.addPage([paperW, paperH], paperW > paperH ? 'l' : 'p');
-        const pageStudents = students.slice(p * cardsPerPage, (p + 1) * cardsPerPage);
-
-        // Container capture element
-        const captureContainer = document.createElement('div');
-        captureContainer.style.position = 'fixed';
-        captureContainer.style.top = '0';
-        captureContainer.style.left = '0';
-        captureContainer.style.width = `${paperW}mm`;
-        captureContainer.style.height = `${paperH}mm`;
-        captureContainer.style.backgroundColor = '#ffffff';
-        captureContainer.style.zIndex = '-99999';
-        captureContainer.style.overflow = 'hidden';
-
-        pageStudents.forEach((student, idx) => {
-          const colIdx = idx % cols;
-          const rowIdx = Math.floor(idx / cols);
-          const posX = computedMarginLeft + colIdx * (cardDesign.widthMm + gapXMm);
-          const posY = computedMarginTop + rowIdx * (cardDesign.heightMm + gapYMm);
-
-          const cardDiv = document.createElement('div');
-          cardDiv.style.position = 'absolute';
-          cardDiv.style.left = `${posX}mm`;
-          cardDiv.style.top = `${posY}mm`;
-          cardDiv.style.width = `${cardDesign.widthMm}mm`;
-          cardDiv.style.height = `${cardDesign.heightMm}mm`;
-          cardDiv.style.overflow = 'hidden';
-          cardDiv.style.boxSizing = 'border-box';
-          cardDiv.style.background =
-            cardDesign.background.type === 'color'
-              ? cardDesign.background.color
-              : cardDesign.background.type === 'gradient'
-              ? cardDesign.background.gradient
-              : '#0f172a';
-
-          if (cardDesign.background.type === 'image' && cardDesign.background.image) {
-            const bgImg = document.createElement('img');
-            bgImg.src = cardDesign.background.image;
-            bgImg.style.position = 'absolute';
-            bgImg.style.inset = '0';
-            bgImg.style.width = '100%';
-            bgImg.style.height = '100%';
-            bgImg.style.objectFit = cardDesign.background.fit || 'cover';
-            cardDiv.appendChild(bgImg);
-          }
-
-          cardDesign.elements.forEach((el) => {
-            const elDiv = document.createElement('div');
-            elDiv.style.position = 'absolute';
-            elDiv.style.left = `${(el.x / 3.78).toFixed(2)}mm`;
-            elDiv.style.top = `${(el.y / 3.78).toFixed(2)}mm`;
-            if (el.width) elDiv.style.width = `${(el.width / 3.78).toFixed(2)}mm`;
-            if (el.height) elDiv.style.height = `${(el.height / 3.78).toFixed(2)}mm`;
-            if (el.zIndex) elDiv.style.zIndex = el.zIndex;
-
-            if (el.type === 'shape') {
-              elDiv.style.backgroundColor = el.fill;
-              elDiv.style.opacity = (el.opacity || 100) / 100;
-              if (el.borderRadius) elDiv.style.borderRadius = `${(el.borderRadius / 3.78).toFixed(2)}mm`;
-            } else if (el.type === 'text' || el.type === 'placeholder') {
-              elDiv.style.fontSize = `${(el.fontSize * 0.75).toFixed(2)}pt`;
-              elDiv.style.fontWeight = el.fontWeight || 'normal';
-              elDiv.style.fontFamily = el.fontFamily || 'sans-serif';
-              elDiv.style.color = el.color || '#ffffff';
-              elDiv.style.textAlign = el.textAlign || 'left';
-              elDiv.innerText = renderPlaceholderText(el.content, student);
-            } else if (el.type === 'photo') {
-              elDiv.style.backgroundColor = '#1e293b';
-              elDiv.style.border = `${el.borderWidth || 1}px solid ${el.borderColor || '#3b82f6'}`;
-              elDiv.style.borderRadius = '2mm';
-              elDiv.style.display = 'flex';
-              elDiv.style.alignItems = 'center';
-              elDiv.style.justifyContent = 'center';
-              elDiv.style.color = '#94a3b8';
-              elDiv.style.fontSize = '8pt';
-              elDiv.style.fontWeight = 'bold';
-              elDiv.innerText = 'FOTO';
-            } else if (el.type === 'image') {
-              const img = document.createElement('img');
-              img.src = el.src;
-              img.style.width = '100%';
-              img.style.height = '100%';
-              img.style.objectFit = 'contain';
-              if (el.opacity) img.style.opacity = el.opacity / 100;
-              elDiv.appendChild(img);
-            } else if (el.type === 'qrcode') {
-              elDiv.style.backgroundColor = '#ffffff';
-              elDiv.style.padding = '1mm';
-              elDiv.style.borderRadius = '1mm';
-              elDiv.style.display = 'flex';
-              elDiv.style.alignItems = 'center';
-              elDiv.style.justifyContent = 'center';
-
-              const qrSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-              qrSvg.setAttribute('viewBox', '0 0 24 24');
-              qrSvg.setAttribute('width', '100%');
-              qrSvg.setAttribute('height', '100%');
-              qrSvg.setAttribute('fill', 'none');
-              qrSvg.setAttribute('stroke', '#0f172a');
-              qrSvg.setAttribute('stroke-width', '2');
-              qrSvg.innerHTML =
-                '<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/>';
-              elDiv.appendChild(qrSvg);
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KartuPelajarPro - Generator Massal & Studio Desain</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel Standalone untuk memproses JSX di browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- External Libraries (Preloaded agar tersedia segera) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* Custom Animations */
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fade-in 0.3s ease-out forwards;
+        }
+        @keyframes bounce-short {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-short {
+            animation: bounce-short 0.5s ease-in-out;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
             }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+    <div id="root"></div>
 
-            cardDiv.appendChild(elDiv);
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Safe SVG Icon Components (Zero dependency risk)
+        const Sun = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M18.36 5.64l1.41-1.41"/></svg>
+        );
+        const Moon = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        );
+        const Upload = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+        );
+        const Trash2 = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+        );
+        const Copy = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        );
+        const Printer = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+        );
+        const FileSpreadsheet = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h8"/><path d="M8 17h8"/><path d="M10 9h.01"/></svg>
+        );
+        const Users = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        );
+        const Edit3 = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        );
+        const LayoutDashboard = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        );
+        const Eye = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+        );
+        const History = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>
+        );
+        const CheckCircle = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        );
+        const AlertTriangle = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+        );
+        const Sparkles = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        );
+        const FileDown = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M12 18v-6"/><path d="m9 15 3 3 3-3"/></svg>
+        );
+        const RefreshCw = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+        );
+        const Search = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+        );
+        const CheckSquare = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        );
+        const Square = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+        );
+        const Image = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+        );
+        const QrCode = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/></svg>
+        );
+        const Type = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" x2="15" y1="20" y2="20"/><line x1="12" x2="12" y1="4" y2="20"/></svg>
+        );
+        const Sliders = (props) => (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="4" x2="4" y1="21" y2="14"/><line x1="4" x2="4" y1="10" y2="3"/><line x1="12" x2="12" y1="21" y2="12"/><line x1="12" x2="12" y1="8" y2="3"/><line x1="20" x2="20" y1="21" y2="16"/><line x1="20" x2="20" y1="12" y2="3"/><line x1="2" x2="6" y1="14" y2="14"/><line x1="10" x2="14" y1="8" y2="8"/><line x1="18" x2="22" y1="16" y2="16"/></svg>
+        );
+
+        const DEFAULT_STUDENTS = [
+          { id: 1, nama: 'AHMAD FAUZI', kelas: 'XII MIPA 1', ruang: '01', noPeserta: '2026-1201', photo: null },
+          { id: 2, nama: 'SITI AMINAH', kelas: 'XII MIPA 2', ruang: '02', noPeserta: '2026-1202', photo: null },
+          { id: 3, nama: 'MUHAMMAD RIZKY', kelas: 'XII IPS 1', ruang: '03', noPeserta: '2026-1203', photo: null },
+          { id: 4, nama: 'DEWI LESTARI', kelas: 'XII IPS 2', ruang: '04', noPeserta: '2026-1204', photo: null }
+        ];
+
+        const DEFAULT_BACKGROUND_IMAGE = 'https://i.ibb.co/L519V1K/Kartu-Peserta-Madrasah-Diniyah.jpg';
+
+        const DEFAULT_DESIGN = {
+          id: 'default-1',
+          name: 'Desain Kartu Peserta Madrasah Diniyah',
+          widthMm: 85.6,
+          heightMm: 54,
+          orientation: 'landscape',
+          background: {
+            type: 'image',
+            color: '#ffffff',
+            gradient: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+            image: DEFAULT_BACKGROUND_IMAGE,
+            fit: 'cover'
+          },
+          elements: [
+            { id: 'photo-frame', type: 'photo', name: 'Frame Foto Siswa', x: 230, y: 70, width: 70, height: 95, borderColor: '#15803d', borderWidth: 2, borderRadius: 4, locked: false, zIndex: 2 },
+            { id: 'label-nama', type: 'placeholder', name: 'Placeholder Nama', content: 'NAMA : [NAMA]', x: 25, y: 80, fontSize: 11, fontWeight: 'bold', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
+            { id: 'label-kelas', type: 'placeholder', name: 'Placeholder Kelas', content: 'KELAS : [KELAS]', x: 25, y: 100, fontSize: 10, fontWeight: 'semibold', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
+            { id: 'label-ruang', type: 'placeholder', name: 'Placeholder Ruang', content: 'NO. RUANG : [NOMOR RUANG]', x: 25, y: 118, fontSize: 10, fontWeight: 'normal', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
+            { id: 'label-peserta', type: 'placeholder', name: 'Placeholder No Peserta', content: 'NO. PESERTA : [NOMOR PESERTA]', x: 25, y: 136, fontSize: 10, fontWeight: 'bold', fontFamily: 'Inter', color: '#047857', locked: false, zIndex: 2 },
+            { id: 'qr-code', type: 'qrcode', name: 'QR Code Siswa', x: 235, y: 170, width: 32, height: 32, locked: false, zIndex: 2 }
+          ]
+        };
+
+        function App() {
+          const [isDarkMode, setIsDarkMode] = useState(true);
+          const [activeTab, setActiveTab] = useState('dashboard');
+          const [notifications, setNotifications] = useState([]);
+          const [selectedElementId, setSelectedElementId] = useState(null);
+          const [searchQuery, setSearchQuery] = useState('');
+          const [previewStudentIdx, setPreviewStudentIdx] = useState(0);
+          const [zoomLevel, setZoomLevel] = useState(1);
+          const [isLibsReady, setIsLibsReady] = useState(false);
+
+          const [students, setStudents] = useState(() => {
+            try {
+              const saved = localStorage.getItem('kartu_pelajar_students');
+              return saved ? JSON.parse(saved) : DEFAULT_STUDENTS;
+            } catch {
+              return DEFAULT_STUDENTS;
+            }
           });
 
-          // Crop Marks
-          if (showCropMarks) {
-            const cropStyle = 'position:absolute; background:#64748b; z-index:9999;';
-            const markLen = '3mm';
+          const [cardDesign, setCardDesign] = useState(() => {
+            try {
+              const saved = localStorage.getItem('kartu_pelajar_design');
+              return saved ? JSON.parse(saved) : DEFAULT_DESIGN;
+            } catch {
+              return DEFAULT_DESIGN;
+            }
+          });
 
-            const topLeftH = document.createElement('div');
-            topLeftH.style.cssText = `${cropStyle} left:-${markLen}; top:0; width:${markLen}; height:0.2mm;`;
-            cardDiv.appendChild(topLeftH);
+          const [savedDesigns, setSavedDesigns] = useState(() => {
+            try {
+              const saved = localStorage.getItem('kartu_pelajar_templates');
+              return saved ? JSON.parse(saved) : [DEFAULT_DESIGN];
+            } catch {
+              return [DEFAULT_DESIGN];
+            }
+          });
 
-            const topLeftV = document.createElement('div');
-            topLeftV.style.cssText = `${cropStyle} left:0; top:-${markLen}; width:0.2mm; height:${markLen};`;
-            cardDiv.appendChild(topLeftV);
-          }
+          useEffect(() => {
+            try {
+              localStorage.setItem('kartu_pelajar_students', JSON.stringify(students));
+            } catch (e) { console.error('LocalStorage error', e); }
+          }, [students]);
 
-          captureContainer.appendChild(cardDiv);
-        });
+          useEffect(() => {
+            try {
+              localStorage.setItem('kartu_pelajar_design', JSON.stringify(cardDesign));
+            } catch (e) { console.error('LocalStorage error', e); }
+          }, [cardDesign]);
 
-        document.body.appendChild(captureContainer);
-        const canvas = await window.html2canvas(captureContainer, { scale: 2, useCORS: true, logging: false });
-        document.body.removeChild(captureContainer);
+          useEffect(() => {
+            try {
+              localStorage.setItem('kartu_pelajar_templates', JSON.stringify(savedDesigns));
+            } catch (e) { console.error('LocalStorage error', e); }
+          }, [savedDesigns]);
 
-        const imgData = canvas.toDataURL('image/jpeg', 0.98);
-        pdf.addImage(imgData, 'JPEG', 0, 0, paperW, paperH);
-      }
+          useEffect(() => {
+            const loadScript = (src) => {
+              return new Promise((resolve) => {
+                if (document.querySelector(`script[src="${src}"]`)) return resolve();
+                const s = document.createElement('script');
+                s.src = src;
+                s.onload = () => resolve();
+                document.head.appendChild(s);
+              });
+            };
 
-      pdf.save(`KartuPelajarMassal_${Date.now()}.pdf`);
-      addNotification('File PDF Siap Cetak berhasil diunduh!', 'success');
-    } catch (err) {
-      console.error(err);
-      addNotification('Gagal mengunduh PDF. Pastikan gambar valid.', 'error');
-    } finally {
-      setIsExporting(false);
-    }
-  };
+            Promise.all([
+              loadScript('https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'),
+              loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+              loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+              loadScript('https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js')
+            ]).then(() => {
+              setIsLibsReady(true);
+            });
+          }, []);
 
-  return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
-      {/* HEADER & ACTION BUTTONS */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-            Pengaturan & Live Preview Cetak
-          </h2>
-          <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-            Atur tata letak posisi kartu, margin kertas, serta jarak per kartu secara riil sebelum dicetak.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleDirectPrint}
-            className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all"
-          >
-            <Printer className="w-4 h-4" />
-            Cetak Langsung (Print)
-          </button>
-          <button
-            onClick={exportPDF}
-            disabled={isExporting}
-            className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all disabled:opacity-50"
-          >
-            <FileDown className="w-4 h-4" />
-            {isExporting ? 'Mencetak PDF...' : 'Download PDF Siap Cetak'}
-          </button>
-        </div>
-      </div>
+          const addNotification = (text, type = 'info') => {
+            const id = `notif-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            setNotifications((prev) => [...prev, { id, text, type }]);
+            setTimeout(() => {
+              setNotifications((prev) => prev.filter((n) => n.id !== id));
+            }, 4000);
+          };
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* LEFT CONTROL PANEL */}
-        <div
-          className={`lg:col-span-5 p-6 rounded-2xl border space-y-6 ${
-            isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
-          }`}
-        >
-          {/* 1. KERTAS SETUP */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Pilihan Ukuran Kertas</h3>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                onClick={() => setPaperSize('a4')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
-                  paperSize === 'a4'
-                    ? 'bg-blue-600 border-blue-500 text-white'
-                    : isDarkMode
-                    ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
-                }`}
-              >
-                A4 (210×297)
-              </button>
-              <button
-                onClick={() => setPaperSize('f4')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
-                  paperSize === 'f4'
-                    ? 'bg-blue-600 border-blue-500 text-white'
-                    : isDarkMode
-                    ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
-                }`}
-              >
-                F4 (215×330)
-              </button>
-              <button
-                onClick={() => setPaperSize('custom')}
-                className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
-                  paperSize === 'custom'
-                    ? 'bg-blue-600 border-blue-500 text-white'
-                    : isDarkMode
-                    ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-                    : 'bg-slate-50 border-slate-200 text-slate-600'
-                }`}
-              >
-                Custom (mm)
-              </button>
-            </div>
+          const renderPlaceholderText = (text, student) => {
+            if (!text || typeof text !== 'string') return '';
+            const st = student || students[0] || { nama: 'Fulan', kelas: 'X-1', ruang: '01', noPeserta: '0000' };
+            return text
+              .replace(/\[NAMA\]/g, st.nama)
+              .replace(/\[KELAS\]/g, st.kelas)
+              .replace(/\[NOMOR RUANG\]/g, st.ruang)
+              .replace(/\[NOMOR PESERTA\]/g, st.noPeserta);
+          };
 
-            {paperSize === 'custom' && (
-              <div className="grid grid-cols-2 gap-3 mt-3 animate-fade-in">
-                <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Lebar Kertas (mm)</label>
-                  <input
-                    type="number"
-                    value={customWidthMm}
-                    onChange={(e) => setCustomWidthMm(Number(e.target.value))}
-                    className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                      isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                    }`}
-                  />
+          const saveCurrentTemplate = () => {
+            const existingIdx = savedDesigns.findIndex((d) => d.id === cardDesign.id);
+            let updated;
+            if (existingIdx >= 0) {
+              updated = [...savedDesigns];
+              updated[existingIdx] = cardDesign;
+            } else {
+              updated = [...savedDesigns, cardDesign];
+            }
+            setSavedDesigns(updated);
+            addNotification(`Template "${cardDesign.name}" tersimpan secara permanen!`, 'success');
+          };
+
+          const setAsDefaultTemplate = () => {
+            try {
+              localStorage.setItem('kartu_pelajar_default_template', JSON.stringify(cardDesign));
+              saveCurrentTemplate();
+              addNotification('Desain saat ini berhasil dijadikan Template Standar Default!', 'success');
+            } catch (e) {
+              addNotification('Gagal menyimpan template default', 'error');
+            }
+          };
+
+          const resetToDefaultData = () => {
+            if (window.confirm('Apakah Anda yakin ingin mereset seluruh data siswa dan desain ke pengaturan awal?')) {
+              const customDefault = localStorage.getItem('kartu_pelajar_default_template');
+              const baseDesign = customDefault ? JSON.parse(customDefault) : DEFAULT_DESIGN;
+              
+              setStudents(DEFAULT_STUDENTS);
+              setCardDesign(baseDesign);
+              setSavedDesigns([baseDesign]);
+              localStorage.removeItem('kartu_pelajar_students');
+              localStorage.removeItem('kartu_pelajar_design');
+              addNotification('Data berhasil di-reset ke template standar default', 'info');
+            }
+          };
+
+          return (
+            <div className={`min-h-screen font-sans antialiased transition-colors duration-300 ${isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'}`}>
+              <header className={`sticky top-0 z-40 border-b backdrop-blur-md ${isDarkMode ? 'bg-slate-950/80 border-slate-800' : 'bg-white/80 border-slate-200'}`}>
+                <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h1 className="font-bold text-sm tracking-wide bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                        KartuPelajarPro
+                      </h1>
+                      <p className="text-[10px] opacity-60">Generator Massal & Studio Desain</p>
+                    </div>
+                  </div>
+
+                  <nav className="hidden md:flex items-center gap-1 bg-slate-900/50 p-1 rounded-xl border border-slate-800/80">
+                    <NavItem label="Dashboard" icon={<LayoutDashboard className="w-4 h-4"/>} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
+                    <NavItem label="Editor Desain" icon={<Edit3 className="w-4 h-4"/>} active={activeTab === 'editor'} onClick={() => setActiveTab('editor')} />
+                    <NavItem label="Import Excel" icon={<FileSpreadsheet className="w-4 h-4"/>} active={activeTab === 'import'} onClick={() => setActiveTab('import')} />
+                    <NavItem label="Data Pelajar" icon={<Users className="w-4 h-4"/>} active={activeTab === 'data'} onClick={() => setActiveTab('data')} />
+                    <NavItem label="Preview Massal" icon={<Eye className="w-4 h-4"/>} active={activeTab === 'preview'} onClick={() => setActiveTab('preview')} />
+                    <NavItem label="Pengaturan Cetak" icon={<Printer className="w-4 h-4"/>} active={activeTab === 'print'} onClick={() => setActiveTab('print')} />
+                  </nav>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setIsDarkMode(!isDarkMode)}
+                      className={`p-2 rounded-xl border transition-all ${isDarkMode ? 'bg-slate-900 border-slate-800 text-amber-400 hover:bg-slate-800' : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'}`}
+                      title="Toggle Mode Terang/Gelap"
+                    >
+                      {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                    </button>
+                    <button
+                      onClick={setAsDefaultTemplate}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5 transition-all"
+                      title="Jadikan Desain Ini Sebagai Template Default Permanen"
+                    >
+                      Set Default
+                    </button>
+                    <button
+                      onClick={saveCurrentTemplate}
+                      className="px-3 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
+                    >
+                      Simpan Desain
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Tinggi Kertas (mm)</label>
-                  <input
-                    type="number"
-                    value={customHeightMm}
-                    onChange={(e) => setCustomHeightMm(Number(e.target.value))}
-                    className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                      isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                    }`}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+              </header>
 
-          {/* 2. GRID & SPACING */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-              2. Jumlah Kartu per Lembar
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Jumlah Kolom (Cards/Row)</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="5"
-                  value={cols}
-                  onChange={(e) => setCols(Math.max(1, Number(e.target.value)))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Jumlah Baris (Cards/Column)</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="10"
-                  value={rows}
-                  onChange={(e) => setRows(Math.max(1, Number(e.target.value)))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 3. MARGIN & GAP SPACING */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-              3. Margin & Jarak Per Kartu (mm)
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Margin Atas (mm)</label>
-                <input
-                  type="number"
-                  value={marginTopMm}
-                  onChange={(e) => setMarginTopMm(Number(e.target.value))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Margin Samping (mm)</label>
-                <input
-                  type="number"
-                  value={marginLeftMm}
-                  onChange={(e) => setMarginLeftMm(Number(e.target.value))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Gap Horizontal (Gap X mm)</label>
-                <input
-                  type="number"
-                  value={gapXMm}
-                  onChange={(e) => setGapXMm(Number(e.target.value))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-              <div>
-                <label className="text-[11px] text-slate-400 block mb-1">Gap Vertikal (Gap Y mm)</label>
-                <input
-                  type="number"
-                  value={gapYMm}
-                  onChange={(e) => setGapYMm(Number(e.target.value))}
-                  className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                    isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* 4. DRAG / SHIFT POSITION CONTROL */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
-              4. Perataan & Geser Posisi Kartu
-            </h3>
-            <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setGridAlign('left')}
-                  className={`py-2 px-3 rounded-xl border text-xs font-semibold ${
-                    gridAlign === 'left'
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : isDarkMode
-                      ? 'bg-slate-900 border-slate-800 text-slate-400'
-                      : 'bg-slate-50 border-slate-200 text-slate-600'
-                  }`}
-                >
-                  Rata Kiri Margin
-                </button>
-                <button
-                  onClick={() => setGridAlign('center')}
-                  className={`py-2 px-3 rounded-xl border text-xs font-semibold ${
-                    gridAlign === 'center'
-                      ? 'bg-blue-600 border-blue-500 text-white'
-                      : isDarkMode
-                      ? 'bg-slate-900 border-slate-800 text-slate-400'
-                      : 'bg-slate-50 border-slate-200 text-slate-600'
-                  }`}
-                >
-                  Presisi Tengah (Center)
-                </button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Geser Offset X (+/- mm)</label>
-                  <input
-                    type="number"
-                    value={offsetX}
-                    onChange={(e) => setOffsetX(Number(e.target.value))}
-                    className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                      isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                    }`}
-                  />
-                </div>
-                <div>
-                  <label className="text-[11px] text-slate-400 block mb-1">Geser Offset Y (+/- mm)</label>
-                  <input
-                    type="number"
-                    value={offsetY}
-                    onChange={(e) => setOffsetY(Number(e.target.value))}
-                    className={`w-full p-2 rounded-xl text-xs border outline-none ${
-                      isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              <label className="flex items-center gap-2 cursor-pointer pt-1 text-xs">
-                <input
-                  type="checkbox"
-                  checked={showCropMarks}
-                  onChange={(e) => setShowCropMarks(e.target.checked)}
-                  className="rounded text-blue-600"
-                />
-                <span>Tampilkan Garis Potong (Crop Marks)</span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT LIVE PREVIEW SCREEN */}
-        <div className="lg:col-span-7 flex flex-col items-center space-y-4">
-          <div className="flex items-center justify-between w-full max-w-lg px-2">
-            <span className="text-xs font-bold text-slate-400">
-              Live Preview Lembar {activePreviewPage + 1} / {totalPages}
-            </span>
-            <div className="flex items-center gap-2">
-              <button
-                disabled={activePreviewPage === 0}
-                onClick={() => setActivePreviewPage((p) => p - 1)}
-                className="px-3 py-1 rounded-lg border border-slate-800 text-xs font-semibold disabled:opacity-40"
-              >
-                Hal. Prev
-              </button>
-              <button
-                disabled={activePreviewPage >= totalPages - 1}
-                onClick={() => setActivePreviewPage((p) => p + 1)}
-                className="px-3 py-1 rounded-lg border border-slate-800 text-xs font-semibold disabled:opacity-40"
-              >
-                Hal. Next
-              </button>
-            </div>
-          </div>
-
-          {/* REAL PAPER PREVIEW DISPLAY */}
-          <div className="overflow-auto max-w-full p-4 bg-slate-900/60 rounded-3xl border border-slate-800 flex justify-center">
-            <div
-              className="relative bg-white text-slate-900 shadow-2xl transition-all border border-slate-300"
-              style={{
-                width: `${currentPaper.w * previewScale}px`,
-                height: `${currentPaper.h * previewScale}px`
-              }}
-            >
-              {currentPageStudents.map((student, idx) => {
-                const colIdx = idx % cols;
-                const rowIdx = Math.floor(idx / cols);
-                const posX = computedMarginLeft + colIdx * (cardDesign.widthMm + gapXMm);
-                const posY = computedMarginTop + rowIdx * (cardDesign.heightMm + gapYMm);
-
-                return (
+              <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
+                {notifications.map((n) => (
                   <div
-                    key={student.id}
-                    className="absolute shadow-sm border border-slate-300 overflow-hidden"
+                    key={n.id}
+                    className={`pointer-events-auto px-4 py-3 rounded-xl border shadow-xl text-xs font-medium flex items-center gap-2.5 animate-bounce-short ${
+                      n.type === 'success'
+                        ? 'bg-emerald-950/90 border-emerald-800 text-emerald-200'
+                        : n.type === 'error'
+                        ? 'bg-rose-950/90 border-rose-800 text-rose-200'
+                        : 'bg-blue-950/90 border-blue-800 text-blue-200'
+                    }`}
+                  >
+                    {n.type === 'success' && <CheckCircle className="w-4 h-4 text-emerald-400" />}
+                    {n.type === 'error' && <AlertTriangle className="w-4 h-4 text-rose-400" />}
+                    {n.type === 'info' && <Sparkles className="w-4 h-4 text-blue-400" />}
+                    <span>{n.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              <main className="pb-16">
+                {activeTab === 'dashboard' && (
+                  <DashboardView
+                    studentsCount={students.length}
+                    savedCount={savedDesigns.length}
+                    setActiveTab={setActiveTab}
+                    isDarkMode={isDarkMode}
+                    resetToDefaultData={resetToDefaultData}
+                  />
+                )}
+                {activeTab === 'editor' && (
+                  <CardEditorView
+                    cardDesign={cardDesign}
+                    setCardDesign={setCardDesign}
+                    students={students}
+                    previewStudentIdx={previewStudentIdx}
+                    renderPlaceholderText={renderPlaceholderText}
+                    addNotification={addNotification}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'import' && (
+                  <ExcelImportView
+                    students={students}
+                    setStudents={setStudents}
+                    addNotification={addNotification}
+                    setActiveTab={setActiveTab}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'data' && (
+                  <StudentDataView
+                    students={students}
+                    setStudents={setStudents}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    addNotification={addNotification}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'preview' && (
+                  <BulkPreviewView
+                    cardDesign={cardDesign}
+                    students={students}
+                    previewStudentIdx={previewStudentIdx}
+                    setPreviewStudentIdx={setPreviewStudentIdx}
+                    renderPlaceholderText={renderPlaceholderText}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+                {activeTab === 'print' && (
+                  <PrintSetupView
+                    cardDesign={cardDesign}
+                    students={students}
+                    renderPlaceholderText={renderPlaceholderText}
+                    addNotification={addNotification}
+                    isDarkMode={isDarkMode}
+                  />
+                )}
+              </main>
+            </div>
+          );
+        }
+
+        function NavItem({ label, icon, active, onClick }) {
+          return (
+            <button
+              onClick={onClick}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                active
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+              }`}
+            >
+              {icon}
+              <span>{label}</span>
+            </button>
+          );
+        }
+
+        function DashboardView({ studentsCount, savedCount, setActiveTab, isDarkMode, resetToDefaultData }) {
+          return (
+            <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+              <div className={`p-8 rounded-3xl border relative overflow-hidden ${isDarkMode ? 'bg-gradient-to-r from-blue-950/60 via-slate-900 to-indigo-950/40 border-blue-900/40' : 'bg-gradient-to-r from-blue-50 via-white to-indigo-50 border-blue-200 shadow-sm'}`}>
+                <div className="max-w-2xl space-y-4">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                    Sistem Pembuat Kartu Pelajar Massal
+                  </span>
+                  <h2 className="text-3xl font-extrabold tracking-tight">Cetak Ratusan Kartu Pelajar Secara Instan</h2>
+                  <p className={`text-sm leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Unggah file Excel data siswa, atur desain dengan kanvas Drag and Drop, dan hasilkan PDF siap cetak dengan ukuran nyata yang presisi.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <button
+                      onClick={() => setActiveTab('import')}
+                      className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/25 flex items-center gap-2 transition-all"
+                    >
+                      <FileSpreadsheet className="w-4 h-4" />
+                      Import Excel Data Siswa
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('editor')}
+                      className={`px-5 py-2.5 rounded-xl border text-xs font-bold flex items-center gap-2 transition-all ${isDarkMode ? 'bg-slate-900 border-slate-700 text-slate-200 hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100'}`}
+                    >
+                      <Edit3 className="w-4 h-4" />
+                      Buka Studio Desain
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                  <div className="flex items-center justify-between pb-4">
+                    <span className="text-xs font-semibold text-slate-400">Total Siswa Terdaftar</span>
+                    <Users className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <p className="text-3xl font-bold">{studentsCount}</p>
+                  <p className="text-[11px] text-slate-400 pt-2">Siap di-generate menjadi kartu pelajar</p>
+                </div>
+
+                <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                  <div className="flex items-center justify-between pb-4">
+                    <span className="text-xs font-semibold text-slate-400">Template Desain Tersimpan</span>
+                    <Sparkles className="w-5 h-5 text-indigo-400" />
+                  </div>
+                  <p className="text-3xl font-bold">{savedCount}</p>
+                  <p className="text-[11px] text-slate-400 pt-2">Tersimpan di memori browser lokal</p>
+                </div>
+
+                <div className={`p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                  <div className="flex items-center justify-between pb-4">
+                    <span className="text-xs font-semibold text-slate-400">Status Penyimpanan Data</span>
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <p className="text-base font-bold text-emerald-400">Permanen (LocalStorage)</p>
+                  <button
+                    onClick={resetToDefaultData}
+                    className="mt-3 px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 transition-all flex items-center gap-1.5"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    Reset Data Ke Standar
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        function CardEditorView({ cardDesign, setCardDesign, students, previewStudentIdx, renderPlaceholderText, addNotification, isDarkMode }) {
+          const currentStudent = students[previewStudentIdx] || students[0] || { nama: 'Fulan', kelas: 'X-1', ruang: '01', noPeserta: '0000' };
+          const [selectedId, setSelectedId] = useState(null);
+
+          const selectedElement = cardDesign.elements.find((el) => el.id === selectedId);
+
+          const updateSelectedElement = (key, val) => {
+            if (!selectedId) return;
+            setCardDesign((prev) => ({
+              ...prev,
+              elements: prev.elements.map((el) => (el.id === selectedId ? { ...el, [key]: val } : el))
+            }));
+          };
+
+          const updateBackground = (bgData) => {
+            setCardDesign((prev) => ({
+              ...prev,
+              background: { ...prev.background, ...bgData }
+            }));
+          };
+
+          const addTextElement = (text, type = 'text') => {
+            const newEl = {
+              id: `el-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+              type: type,
+              name: type === 'placeholder' ? text : 'Teks Baru',
+              content: text,
+              x: 20,
+              y: 20,
+              fontSize: 12,
+              fontWeight: 'normal',
+              fontFamily: 'Inter',
+              color: '#ffffff',
+              textAlign: 'left',
+              locked: false,
+              zIndex: cardDesign.elements.length + 1
+            };
+            setCardDesign((prev) => ({ ...prev, elements: [...prev.elements, newEl] }));
+            setSelectedId(newEl.id);
+          };
+
+          const handleCustomImageUpload = (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              const src = evt.target.result;
+              const newEl = {
+                id: `img-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+                type: 'image',
+                name: file.name,
+                src: src,
+                x: 30,
+                y: 30,
+                width: 60,
+                height: 60,
+                opacity: 100,
+                locked: false,
+                zIndex: cardDesign.elements.length + 1
+              };
+              setCardDesign((prev) => ({ ...prev, elements: [...prev.elements, newEl] }));
+              setSelectedId(newEl.id);
+              addNotification('Gambar berhasil diunggah ke kanvas!', 'success');
+            };
+            reader.readAsDataURL(file);
+          };
+
+          const handleBackgroundUpload = (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              updateBackground({ type: 'image', image: evt.target.result });
+              addNotification('Background gambar dari laptop berhasil diterapkan!', 'success');
+            };
+            reader.readAsDataURL(file);
+          };
+
+          return (
+            <div className="flex flex-col lg:flex-row h-[calc(100vh-4rem)] overflow-hidden">
+              <div className={`w-full lg:w-72 border-r p-4 overflow-y-auto space-y-6 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Tambah Elemen</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => addTextElement('Teks Tambahan', 'text')}
+                      className="p-2.5 rounded-xl border border-slate-800 hover:bg-blue-600/10 text-xs font-semibold flex flex-col items-center gap-1.5 transition-all"
+                    >
+                      <Type className="w-4 h-4 text-blue-400" />
+                      Teks Baru
+                    </button>
+                    <button
+                      onClick={() => addTextElement('[NAMA]', 'placeholder')}
+                      className="p-2.5 rounded-xl border border-slate-800 hover:bg-blue-600/10 text-xs font-semibold flex flex-col items-center gap-1.5 transition-all"
+                    >
+                      <Sliders className="w-4 h-4 text-indigo-400" />
+                      Tag Dynamic
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Import Gambar / Logo</h3>
+                  <label className="w-full p-3 rounded-xl border border-dashed border-blue-500/40 hover:bg-blue-500/5 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition-all">
+                    <Image className="w-4 h-4 text-blue-400" />
+                    <span>Upload Logo / Gambar</span>
+                    <input type="file" accept="image/*" className="hidden" onChange={handleCustomImageUpload} />
+                  </label>
+                </div>
+
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Background Kartu</h3>
+                  <div className="space-y-3">
+                    <select
+                      value={cardDesign.background.type}
+                      onChange={(e) => updateBackground({ type: e.target.value })}
+                      className={`w-full p-2 rounded-xl text-xs border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                    >
+                      <option value="color">Warna Solid</option>
+                      <option value="gradient">Gradient Modern</option>
+                      <option value="image">Gambar Custom (Laptop)</option>
+                    </select>
+
+                    {cardDesign.background.type === 'color' && (
+                      <input
+                        type="color"
+                        value={cardDesign.background.color}
+                        onChange={(e) => updateBackground({ color: e.target.value })}
+                        className="w-full h-8 rounded-lg cursor-pointer bg-transparent border-0"
+                      />
+                    )}
+
+                    {cardDesign.background.type === 'image' && (
+                      <label className="w-full p-2.5 rounded-xl border border-slate-800 hover:bg-slate-900 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer">
+                        <Upload className="w-4 h-4 text-emerald-400" />
+                        <span>Pilih File Gambar Laptop</span>
+                        <input type="file" accept="image/*" className="hidden" onChange={handleBackgroundUpload} />
+                      </label>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 bg-slate-900/50 p-8 flex items-center justify-center overflow-auto relative">
+                <div
+                  className="relative shadow-2xl rounded-xl overflow-hidden transition-all select-none border border-slate-700/50"
+                  style={{
+                    width: `${cardDesign.widthMm * 3.78}px`,
+                    height: `${cardDesign.heightMm * 3.78}px`,
+                    background:
+                      cardDesign.background.type === 'color'
+                        ? cardDesign.background.color
+                        : cardDesign.background.type === 'gradient'
+                        ? cardDesign.background.gradient
+                        : undefined
+                  }}
+                >
+                  {cardDesign.background.type === 'image' && cardDesign.background.image && (
+                    <img
+                      src={cardDesign.background.image}
+                      alt="Background"
+                      className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                    />
+                  )}
+
+                  {cardDesign.elements.map((el) => {
+                    const isSelected = el.id === selectedId;
+                    return (
+                      <div
+                        key={el.id}
+                        onClick={() => setSelectedId(el.id)}
+                        className={`absolute cursor-move transition-shadow ${isSelected ? 'ring-2 ring-blue-500 ring-offset-1 ring-offset-slate-900' : ''}`}
+                        style={{
+                          left: `${el.x}px`,
+                          top: `${el.y}px`,
+                          width: el.width ? `${el.width}px` : undefined,
+                          height: el.height ? `${el.height}px` : undefined,
+                          zIndex: el.zIndex || 1
+                        }}
+                      >
+                        {el.type === 'shape' && (
+                          <div
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: el.fill,
+                              opacity: (el.opacity || 100) / 100,
+                              borderRadius: `${el.borderRadius || 0}px`
+                            }}
+                          />
+                        )}
+                        {(el.type === 'text' || el.type === 'placeholder') && (
+                          <div
+                            style={{
+                              fontSize: `${el.fontSize}px`,
+                              fontWeight: el.fontWeight,
+                              fontFamily: el.fontFamily,
+                              color: el.color,
+                              textAlign: el.textAlign
+                            }}
+                          >
+                            {renderPlaceholderText(el.content, currentStudent)}
+                          </div>
+                        )}
+                        {el.type === 'photo' && (
+                          <div
+                            className="bg-slate-800/80 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-blue-500/40"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              borderRadius: `${el.borderRadius || 4}px`
+                            }}
+                          >
+                            FOTO SISWA
+                          </div>
+                        )}
+                        {el.type === 'image' && (
+                          <img
+                            src={el.src}
+                            alt={el.name}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'contain',
+                              opacity: (el.opacity || 100) / 100
+                            }}
+                          />
+                        )}
+                        {el.type === 'qrcode' && (
+                          <div className="bg-white p-1 rounded flex items-center justify-center shadow-md" style={{ width: '100%', height: '100%' }}>
+                            <QrCode className="w-full h-full text-slate-900" />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className={`w-full lg:w-80 border-l p-4 overflow-y-auto space-y-6 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Pengaturan Elemen</h3>
+                {selectedElement ? (
+                  <div className="space-y-4 text-xs">
+                    <div>
+                      <label className="text-slate-400 block mb-1">Nama Layer / Elemen</label>
+                      <input
+                        type="text"
+                        value={selectedElement.name || ''}
+                        onChange={(e) => updateSelectedElement('name', e.target.value)}
+                        className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-slate-400 block mb-1">Posisi X (px)</label>
+                        <input
+                          type="number"
+                          value={selectedElement.x}
+                          onChange={(e) => updateSelectedElement('x', Number(e.target.value))}
+                          className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-slate-400 block mb-1">Posisi Y (px)</label>
+                        <input
+                          type="number"
+                          value={selectedElement.y}
+                          onChange={(e) => updateSelectedElement('y', Number(e.target.value))}
+                          className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                        />
+                      </div>
+                    </div>
+
+                    {(selectedElement.type === 'text' || selectedElement.type === 'placeholder') && (
+                      <>
+                        <div>
+                          <label className="text-slate-400 block mb-1">Konten Teks</label>
+                          <input
+                            type="text"
+                            value={selectedElement.content}
+                            onChange={(e) => updateSelectedElement('content', e.target.value)}
+                            className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-slate-400 block mb-1">Ukuran Font</label>
+                            <input
+                              type="number"
+                              value={selectedElement.fontSize}
+                              onChange={(e) => updateSelectedElement('fontSize', Number(e.target.value))}
+                              className={`w-full p-2 rounded-lg border outline-none ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}
+                            />
+                          </div>
+                          <div>
+                            <label className="text-slate-400 block mb-1">Warna Teks</label>
+                            <input
+                              type="color"
+                              value={selectedElement.color || '#ffffff'}
+                              onChange={(e) => updateSelectedElement('color', e.target.value)}
+                              className="w-full h-8 rounded-lg cursor-pointer bg-transparent border-0"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setCardDesign((prev) => ({
+                          ...prev,
+                          elements: prev.elements.filter((el) => el.id !== selectedId)
+                        }));
+                        setSelectedId(null);
+                      }}
+                      className="w-full py-2 rounded-xl bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 font-semibold flex items-center justify-center gap-1.5 transition-all mt-4"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Hapus Elemen Ini
+                    </button>
+                  </div>
+                ) : (
+                  <p className="text-xs opacity-50">Klik salah satu elemen di kanvas untuk mengubah propertinya.</p>
+                )}
+              </div>
+            </div>
+          );
+        }
+
+        function ExcelImportView({ students, setStudents, addNotification, setActiveTab, isDarkMode }) {
+          const handleFileUpload = (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+              try {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = window.XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = window.XLSX.utils.sheet_to_json(worksheet);
+
+                const mapped = json.map((row, idx) => ({
+                  id: `st-${Date.now()}-${idx}-${Math.random().toString(36).substring(2, 7)}`,
+                  nama: String(row.Nama || row.NAMA || row['Nama Siswa'] || 'SISWA ' + (idx + 1)).toUpperCase(),
+                  kelas: String(row.Kelas || row.KELAS || 'XII MIPA 1'),
+                  ruang: String(row.Ruang || row.RUANG || row['Nomor Ruang'] || '01'),
+                  noPeserta: String(row.Peserta || row['No Peserta'] || row['Nomor Peserta'] || `2026-${1000 + idx}`),
+                  photo: null
+                }));
+
+                setStudents(mapped);
+                addNotification(`Berhasil mengimpor ${mapped.length} data siswa!`, 'success');
+                setActiveTab('data');
+              } catch (err) {
+                addNotification('Gagal membaca file Excel! Pastikan format sesuai.', 'error');
+              }
+            };
+            reader.readAsArrayBuffer(file);
+          };
+
+          return (
+            <div className="p-8 max-w-4xl mx-auto space-y-8 animate-fade-in">
+              <div className="text-center space-y-2">
+                <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Import Data Siswa dari Excel</h2>
+                <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Unggah file Excel (.xlsx / .xls) yang berisi data Nama, Kelas, Nomor Ruang, dan Nomor Peserta.
+                </p>
+              </div>
+
+              <div className={`p-12 rounded-3xl border-2 border-dashed text-center space-y-4 ${isDarkMode ? 'bg-slate-950/60 border-blue-500/30' : 'bg-white border-blue-300 shadow-sm'}`}>
+                <FileSpreadsheet className="w-12 h-12 text-blue-500 mx-auto animate-bounce-short" />
+                <div>
+                  <label className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-lg shadow-blue-600/20 cursor-pointer inline-flex items-center gap-2 transition-all">
+                    <Upload className="w-4 h-4" />
+                    Pilih File Excel Laptop (.xlsx)
+                    <input type="file" accept=".xlsx, .xls" className="hidden" onChange={handleFileUpload} />
+                  </label>
+                </div>
+                <p className="text-[11px] opacity-50">Dukungan format .xlsx dan .xls hingga ribuan data sekaligus.</p>
+              </div>
+            </div>
+          );
+        }
+
+        function StudentDataView({ students, setStudents, searchQuery, setSearchQuery, addNotification, isDarkMode }) {
+          const [selectedIds, setSelectedIds] = useState([]);
+          const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+          const filteredStudents = students.filter(
+            (s) =>
+              s.nama.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              s.noPeserta.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              s.kelas.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+
+          const isAllSelected = filteredStudents.length > 0 && selectedIds.length === filteredStudents.length;
+
+          const toggleSelectAll = () => {
+            if (isAllSelected) {
+              setSelectedIds([]);
+            } else {
+              setSelectedIds(filteredStudents.map((s) => s.id));
+            }
+          };
+
+          const toggleSelectOne = (id) => {
+            if (selectedIds.includes(id)) {
+              setSelectedIds(selectedIds.filter((item) => item !== id));
+            } else {
+              setSelectedIds([...selectedIds, id]);
+            }
+          };
+
+          const deleteSingleStudent = (id) => {
+            const target = students.find((s) => s.id === id);
+            setStudents(students.filter((s) => s.id !== id));
+            setSelectedIds(selectedIds.filter((item) => item !== id));
+            addNotification(`Data "${target?.nama || 'Siswa'}" berhasil dihapus`, 'info');
+          };
+
+          const deleteSelectedStudents = () => {
+            setStudents(students.filter((s) => !selectedIds.includes(s.id)));
+            addNotification(`Berhasil menghapus ${selectedIds.length} data siswa terlipih!`, 'success');
+            setSelectedIds([]);
+          };
+
+          const deleteAllStudents = () => {
+            setStudents([]);
+            setSelectedIds([]);
+            setShowConfirmModal(false);
+            addNotification('Seluruh data siswa telah dikosongkan', 'info');
+          };
+
+          const addNewStudent = () => {
+            const newStudent = {
+              id: `st-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+              nama: 'SISWA BARU',
+              kelas: 'XII MIPA 1',
+              ruang: '01',
+              noPeserta: `2026-${Math.floor(1000 + Math.random() * 9000)}`,
+              photo: null
+            };
+            setStudents([newStudent, ...students]);
+            addNotification('Siswa baru berhasil ditambahkan', 'success');
+          };
+
+          return (
+            <div className="p-8 max-w-7xl mx-auto space-y-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Data Pelajar ({students.length})</h2>
+                  <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>Data tersimpan otomatis di memori internal browser (Anti-hilang saat refresh).</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  {students.length > 0 && (
+                    <button
+                      onClick={() => setShowConfirmModal(true)}
+                      className="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-600/10 hover:bg-rose-600/20 text-rose-400 border border-rose-500/20 flex items-center gap-1.5 transition-all"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Kosongkan Semua Data
+                    </button>
+                  )}
+                  <button
+                    onClick={addNewStudent}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white flex items-center gap-2 shadow-md transition-all"
+                  >
+                    <Users className="w-4 h-4" />
+                    Tambah Siswa Manual
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+                <div className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-xl border ${isDarkMode ? 'bg-slate-950 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'}`}>
+                  <Search className="w-4 h-4 opacity-50" />
+                  <input
+                    type="text"
+                    placeholder="Cari berdasarkan nama, kelas, atau nomor peserta..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-transparent text-xs outline-none"
+                  />
+                </div>
+
+                {selectedIds.length > 0 && (
+                  <button
+                    onClick={deleteSelectedStudents}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white flex items-center gap-2 shadow-lg transition-all animate-fade-in"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Hapus ({selectedIds.length}) Siswa Terpilih
+                  </button>
+                )}
+              </div>
+
+              <div className={`overflow-hidden rounded-2xl border ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'}`}>
+                <table className="w-full text-left text-xs">
+                  <thead className={`border-b font-semibold select-none ${isDarkMode ? 'bg-slate-900/80 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-500'}`}>
+                    <tr>
+                      <th className="p-3.5 w-10 text-center">
+                        <button onClick={toggleSelectAll} className="p-1 hover:text-blue-400 transition-colors">
+                          {isAllSelected ? <CheckSquare className="w-4 h-4 text-blue-500" /> : <Square className="w-4 h-4 opacity-40" />}
+                        </button>
+                      </th>
+                      <th className="p-3.5">No</th>
+                      <th className="p-3.5">Nama Siswa</th>
+                      <th className="p-3.5">Kelas</th>
+                      <th className="p-3.5">Ruang</th>
+                      <th className="p-3.5">No. Peserta</th>
+                      <th className="p-3.5 text-right">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className={`divide-y ${isDarkMode ? 'divide-slate-800/60' : 'divide-slate-100'}`}>
+                    {filteredStudents.length > 0 ? (
+                      filteredStudents.map((s, idx) => {
+                        const isSelected = selectedIds.includes(s.id);
+                        return (
+                          <tr
+                            key={s.id}
+                            className={`transition-colors ${isSelected ? (isDarkMode ? 'bg-blue-900/20' : 'bg-blue-50') : 'hover:bg-blue-500/5'} ${
+                              isDarkMode ? 'text-slate-200' : 'text-slate-700'
+                            }`}
+                          >
+                            <td className="p-3.5 text-center">
+                              <button onClick={() => toggleSelectOne(s.id)} className="p-1 hover:text-blue-400 transition-colors">
+                                {isSelected ? <CheckSquare className="w-4 h-4 text-blue-500" /> : <Square className="w-4 h-4 opacity-40" />}
+                              </button>
+                            </td>
+                            <td className="p-3.5 opacity-60 font-mono">{idx + 1}</td>
+                            <td className="p-3.5 font-bold">{s.nama}</td>
+                            <td className="p-3.5">{s.kelas}</td>
+                            <td className="p-3.5">{s.ruang}</td>
+                            <td className="p-3.5 font-mono text-blue-400 font-semibold">{s.noPeserta}</td>
+                            <td className="p-3.5 text-right">
+                              <button
+                                onClick={() => deleteSingleStudent(s.id)}
+                                className="p-1.5 rounded-lg hover:bg-rose-950/60 text-rose-400 transition-colors"
+                                title="Hapus Siswa Satuan"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={7} className="p-8 text-center opacity-50">Tidak ada data siswa yang cocok.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {showConfirmModal && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+                  <div className={`max-w-md w-full rounded-2xl p-6 border shadow-2xl space-y-4 ${isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200'}`}>
+                    <div className="flex items-center gap-3 text-rose-500">
+                      <AlertTriangle className="w-6 h-6" />
+                      <h3 className="font-bold text-base">Konfirmasi Hapus Semua Data</h3>
+                    </div>
+                    <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                      Apakah Anda yakin ingin mengosongkan seluruh ({students.length}) data siswa? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+                    <div className="flex items-center justify-end gap-3 pt-2">
+                      <button
+                        onClick={() => setShowConfirmModal(false)}
+                        className={`px-4 py-2 rounded-xl text-xs font-semibold ${isDarkMode ? 'bg-slate-900 hover:bg-slate-800 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'}`}
+                      >
+                        Batal
+                      </button>
+                      <button
+                        onClick={deleteAllStudents}
+                        className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white shadow-lg"
+                      >
+                        Ya, Hapus Semua Data
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
+
+        function BulkPreviewView({ cardDesign, students, previewStudentIdx, setPreviewStudentIdx, renderPlaceholderText, searchQuery, setSearchQuery, isDarkMode }) {
+          const currentStudent = students[previewStudentIdx] || students[0];
+
+          return (
+            <div className="p-8 max-w-7xl mx-auto space-y-6 animate-fade-in">
+              <div className="flex items-center justify-between">
+                <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Preview Hasil Kartu Massal</h2>
+                <div className="flex items-center gap-3 text-xs">
+                  <button
+                    disabled={previewStudentIdx === 0}
+                    onClick={() => setPreviewStudentIdx((p) => p - 1)}
+                    className="px-3 py-1.5 rounded-xl border border-slate-800 disabled:opacity-40"
+                  >
+                    Sebelumnya
+                  </button>
+                  <span>Siswa {previewStudentIdx + 1} dari {students.length}</span>
+                  <button
+                    disabled={previewStudentIdx >= students.length - 1}
+                    onClick={() => setPreviewStudentIdx((p) => p + 1)}
+                    className="px-3 py-1.5 rounded-xl border border-slate-800 disabled:opacity-40"
+                  >
+                    Berikutnya
+                  </button>
+                </div>
+              </div>
+
+              {currentStudent && (
+                <div className="flex justify-center py-12">
+                  <div
+                    className="relative shadow-2xl rounded-xl overflow-hidden border border-slate-700/50"
                     style={{
-                      left: `${posX * previewScale}px`,
-                      top: `${posY * previewScale}px`,
-                      width: `${cardDesign.widthMm * previewScale}px`,
-                      height: `${cardDesign.heightMm * previewScale}px`,
+                      width: `${cardDesign.widthMm * 3.78}px`,
+                      height: `${cardDesign.heightMm * 3.78}px`,
                       background:
                         cardDesign.background.type === 'color'
                           ? cardDesign.background.color
                           : cardDesign.background.type === 'gradient'
                           ? cardDesign.background.gradient
-                          : '#0f172a'
+                          : undefined
                     }}
                   >
                     {cardDesign.background.type === 'image' && cardDesign.background.image && (
                       <img
                         src={cardDesign.background.image}
-                        alt="bg"
+                        alt="Background"
                         className="absolute inset-0 w-full h-full object-cover pointer-events-none"
                       />
                     )}
 
-                    {cardDesign.elements.map((el) => {
-                      const scaleFactor = (cardDesign.widthMm * previewScale) / (cardDesign.widthMm * 3.78);
-                      return (
-                        <div
-                          key={el.id}
-                          className="absolute pointer-events-none"
-                          style={{
-                            left: `${el.x * scaleFactor}px`,
-                            top: `${el.y * scaleFactor}px`,
-                            width: el.width ? `${el.width * scaleFactor}px` : undefined,
-                            height: el.height ? `${el.height * scaleFactor}px` : undefined,
-                            zIndex: el.zIndex || 1
-                          }}
-                        >
-                          {el.type === 'shape' && (
-                            <div
-                              style={{
-                                width: '100%',
-                                height: '100%',
-                                backgroundColor: el.fill,
-                                opacity: (el.opacity || 100) / 100,
-                                borderRadius: `${(el.borderRadius || 0) * scaleFactor}px`
-                              }}
-                            />
-                          )}
-                          {(el.type === 'text' || el.type === 'placeholder') && (
-                            <div
-                              style={{
-                                fontSize: `${el.fontSize * scaleFactor}px`,
-                                fontWeight: el.fontWeight,
-                                fontFamily: el.fontFamily,
-                                color: el.color,
-                                textAlign: el.textAlign
-                              }}
-                            >
-                              {renderPlaceholderText(el.content, student)}
-                            </div>
-                          )}
-                          {el.type === 'photo' && (
-                            <div
-                              className="bg-slate-800 flex items-center justify-center text-[8px] text-slate-400 font-bold border border-blue-500/40"
-                              style={{ width: '100%', height: '100%', borderRadius: '2px' }}
-                            >
-                              FOTO
-                            </div>
-                          )}
-                          {el.type === 'image' && (
-                            <img
-                              src={el.src}
-                              alt={el.name}
-                              style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                            />
-                          )}
-                          {el.type === 'qrcode' && (
-                            <div
-                              className="bg-white p-0.5 rounded flex items-center justify-center"
-                              style={{ width: '100%', height: '100%' }}
-                            >
-                              <QrCode className="w-full h-full text-slate-900" />
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
+                    {cardDesign.elements.map((el) => (
+                      <div
+                        key={el.id}
+                        className="absolute"
+                        style={{
+                          left: `${el.x}px`,
+                          top: `${el.y}px`,
+                          width: el.width ? `${el.width}px` : undefined,
+                          height: el.height ? `${el.height}px` : undefined,
+                          zIndex: el.zIndex || 1
+                        }}
+                      >
+                        {el.type === 'shape' && (
+                          <div
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: el.fill,
+                              opacity: (el.opacity || 100) / 100,
+                              borderRadius: `${el.borderRadius || 0}px`
+                            }}
+                          />
+                        )}
+                        {(el.type === 'text' || el.type === 'placeholder') && (
+                          <div
+                            style={{
+                              fontSize: `${el.fontSize}px`,
+                              fontWeight: el.fontWeight,
+                              fontFamily: el.fontFamily,
+                              color: el.color,
+                              textAlign: el.textAlign
+                            }}
+                          >
+                            {renderPlaceholderText(el.content, currentStudent)}
+                          </div>
+                        )}
+                        {el.type === 'photo' && (
+                          <div
+                            className="bg-slate-800 flex items-center justify-center text-[10px] text-slate-400 font-bold border border-blue-500/40"
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              borderRadius: `${el.borderRadius || 4}px`
+                            }}
+                          >
+                            FOTO
+                          </div>
+                        )}
+                        {el.type === 'image' && (
+                          <img src={el.src} alt={el.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        )}
+                        {el.type === 'qrcode' && (
+                          <div className="bg-white p-1 rounded flex items-center justify-center" style={{ width: '100%', height: '100%' }}>
+                            <QrCode className="w-full h-full text-slate-900" />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        }
 
-                    {showCropMarks && (
-                      <>
-                        <div className="absolute top-0 left-0 w-2 h-[0.5px] bg-slate-500" />
-                        <div className="absolute top-0 left-0 w-[0.5px] h-2 bg-slate-500" />
-                      </>
+        function PrintSetupView({ cardDesign, students, renderPlaceholderText, addNotification, isDarkMode }) {
+          const [paperSize, setPaperSize] = useState('a4');
+          const [customWidthMm, setCustomWidthMm] = useState(210);
+          const [customHeightMm, setCustomHeightMm] = useState(297);
+          const [marginTopMm, setMarginTopMm] = useState(10);
+          const [marginLeftMm, setMarginLeftMm] = useState(10);
+          const [gapXMm, setGapXMm] = useState(4);
+          const [gapYMm, setGapYMm] = useState(4);
+          const [cols, setCols] = useState(2);
+          const [rows, setRows] = useState(5);
+          const [gridAlign, setGridAlign] = useState('center');
+          const [offsetX, setOffsetX] = useState(0);
+          const [offsetY, setOffsetY] = useState(0);
+          const [showCropMarks, setShowCropMarks] = useState(true);
+          const [activePreviewPage, setActivePreviewPage] = useState(0);
+          const [isExporting, setIsExporting] = useState(false);
+
+          const getPaperDimensions = () => {
+            if (paperSize === 'a4') return { w: 210, h: 297 };
+            if (paperSize === 'letter') return { w: 216, h: 279 };
+            if (paperSize === 'f4') return { w: 215, h: 330 };
+            return { w: Number(customWidthMm) || 210, h: Number(customHeightMm) || 297 };
+          };
+
+          const currentPaper = getPaperDimensions();
+          const cardsPerPage = Math.max(1, cols * rows);
+          const totalPages = Math.ceil(students.length / cardsPerPage) || 1;
+          const currentPageStudents = students.slice(
+            activePreviewPage * cardsPerPage,
+            (activePreviewPage + 1) * cardsPerPage
+          );
+
+          const previewScale = 2.0;
+
+          const totalGridWidth = cols * cardDesign.widthMm + (cols - 1) * gapXMm;
+          const computedMarginLeft =
+            gridAlign === 'center'
+              ? (currentPaper.w - totalGridWidth) / 2 + Number(offsetX)
+              : Number(marginLeftMm) + Number(offsetX);
+          const computedMarginTop = Number(marginTopMm) + Number(offsetY);
+
+          const handleDirectPrint = () => {
+            window.print();
+          };
+
+          const exportPDF = async () => {
+            if (!window.jspdf || !window.html2canvas) {
+              addNotification('Library PDF sedang memuat, silakan tunggu sebentar...', 'error');
+              return;
+            }
+
+            setIsExporting(true);
+            addNotification('Sedang membuat berkas PDF High-DPI Siap Cetak...', 'info');
+
+            try {
+              const { jsPDF } = window.jspdf;
+              const paperW = Number(currentPaper.w) || 210;
+              const paperH = Number(currentPaper.h) || 297;
+
+              const pdf = new jsPDF({
+                orientation: paperW > paperH ? 'l' : 'p',
+                unit: 'mm',
+                format: [paperW, paperH]
+              });
+
+              for (let p = 0; p < totalPages; p++) {
+                if (p > 0) pdf.addPage([paperW, paperH], paperW > paperH ? 'l' : 'p');
+                const pageStudents = students.slice(p * cardsPerPage, (p + 1) * cardsPerPage);
+
+                const captureContainer = document.createElement('div');
+                captureContainer.style.position = 'fixed';
+                captureContainer.style.top = '0';
+                captureContainer.style.left = '0';
+                captureContainer.style.width = `${paperW}mm`;
+                captureContainer.style.height = `${paperH}mm`;
+                captureContainer.style.backgroundColor = '#ffffff';
+                captureContainer.style.zIndex = '-99999';
+                captureContainer.style.overflow = 'hidden';
+
+                pageStudents.forEach((student, idx) => {
+                  const colIdx = idx % cols;
+                  const rowIdx = Math.floor(idx / cols);
+                  const posX = computedMarginLeft + colIdx * (cardDesign.widthMm + gapXMm);
+                  const posY = computedMarginTop + rowIdx * (cardDesign.heightMm + gapYMm);
+
+                  const cardDiv = document.createElement('div');
+                  cardDiv.style.position = 'absolute';
+                  cardDiv.style.left = `${posX}mm`;
+                  cardDiv.style.top = `${posY}mm`;
+                  cardDiv.style.width = `${cardDesign.widthMm}mm`;
+                  cardDiv.style.height = `${cardDesign.heightMm}mm`;
+                  cardDiv.style.overflow = 'hidden';
+                  cardDiv.style.boxSizing = 'border-box';
+                  cardDiv.style.background =
+                    cardDesign.background.type === 'color'
+                      ? cardDesign.background.color
+                      : cardDesign.background.type === 'gradient'
+                      ? cardDesign.background.gradient
+                      : '#0f172a';
+
+                  if (cardDesign.background.type === 'image' && cardDesign.background.image) {
+                    const bgImg = document.createElement('img');
+                    bgImg.src = cardDesign.background.image;
+                    bgImg.style.position = 'absolute';
+                    bgImg.style.inset = '0';
+                    bgImg.style.width = '100%';
+                    bgImg.style.height = '100%';
+                    bgImg.style.objectFit = cardDesign.background.fit || 'cover';
+                    cardDiv.appendChild(bgImg);
+                  }
+
+                  cardDesign.elements.forEach((el) => {
+                    const elDiv = document.createElement('div');
+                    elDiv.style.position = 'absolute';
+                    elDiv.style.left = `${(el.x / 3.78).toFixed(2)}mm`;
+                    elDiv.style.top = `${(el.y / 3.78).toFixed(2)}mm`;
+                    if (el.width) elDiv.style.width = `${(el.width / 3.78).toFixed(2)}mm`;
+                    if (el.height) elDiv.style.height = `${(el.height / 3.78).toFixed(2)}mm`;
+                    if (el.zIndex) elDiv.style.zIndex = el.zIndex;
+
+                    if (el.type === 'shape') {
+                      elDiv.style.backgroundColor = el.fill;
+                      elDiv.style.opacity = (el.opacity || 100) / 100;
+                      if (el.borderRadius) elDiv.style.borderRadius = `${(el.borderRadius / 3.78).toFixed(2)}mm`;
+                    } else if (el.type === 'text' || el.type === 'placeholder') {
+                      elDiv.style.fontSize = `${(el.fontSize * 0.75).toFixed(2)}pt`;
+                      elDiv.style.fontWeight = el.fontWeight || 'normal';
+                      elDiv.style.fontFamily = el.fontFamily || 'sans-serif';
+                      elDiv.style.color = el.color || '#ffffff';
+                      elDiv.style.textAlign = el.textAlign || 'left';
+                      elDiv.innerText = renderPlaceholderText(el.content, student);
+                    } else if (el.type === 'photo') {
+                      elDiv.style.backgroundColor = '#1e293b';
+                      elDiv.style.border = `${el.borderWidth || 1}px solid ${el.borderColor || '#3b82f6'}`;
+                      elDiv.style.borderRadius = '2mm';
+                      elDiv.style.display = 'flex';
+                      elDiv.style.alignItems = 'center';
+                      elDiv.style.justifyContent = 'center';
+                      elDiv.style.color = '#94a3b8';
+                      elDiv.style.fontSize = '8pt';
+                      elDiv.style.fontWeight = 'bold';
+                      elDiv.innerText = 'FOTO';
+                    } else if (el.type === 'image') {
+                      const img = document.createElement('img');
+                      img.src = el.src;
+                      img.style.width = '100%';
+                      img.style.height = '100%';
+                      img.style.objectFit = 'contain';
+                      if (el.opacity) img.style.opacity = el.opacity / 100;
+                      elDiv.appendChild(img);
+                    } else if (el.type === 'qrcode') {
+                      elDiv.style.backgroundColor = '#ffffff';
+                      elDiv.style.padding = '1mm';
+                      elDiv.style.borderRadius = '1mm';
+                      elDiv.style.display = 'flex';
+                      elDiv.style.alignItems = 'center';
+                      elDiv.style.justifyContent = 'center';
+
+                      const qrSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                      qrSvg.setAttribute('viewBox', '0 0 24 24');
+                      qrSvg.setAttribute('width', '100%');
+                      qrSvg.setAttribute('height', '100%');
+                      qrSvg.setAttribute('fill', 'none');
+                      qrSvg.setAttribute('stroke', '#0f172a');
+                      qrSvg.setAttribute('stroke-width', '2');
+                      qrSvg.innerHTML =
+                        '<rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/>';
+                      elDiv.appendChild(qrSvg);
+                    }
+
+                    cardDiv.appendChild(elDiv);
+                  });
+
+                  if (showCropMarks) {
+                    const cropStyle = 'position:absolute; background:#64748b; z-index:9999;';
+                    const markLen = '3mm';
+
+                    const topLeftH = document.createElement('div');
+                    topLeftH.style.cssText = `${cropStyle} left:-${markLen}; top:0; width:${markLen}; height:0.2mm;`;
+                    cardDiv.appendChild(topLeftH);
+
+                    const topLeftV = document.createElement('div');
+                    topLeftV.style.cssText = `${cropStyle} left:0; top:-${markLen}; width:0.2mm; height:${markLen};`;
+                    cardDiv.appendChild(topLeftV);
+                  }
+
+                  captureContainer.appendChild(cardDiv);
+                });
+
+                document.body.appendChild(captureContainer);
+                const canvas = await window.html2canvas(captureContainer, { scale: 2, useCORS: true, logging: false });
+                document.body.removeChild(captureContainer);
+
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+                pdf.addImage(imgData, 'JPEG', 0, 0, paperW, paperH);
+              }
+
+              pdf.save(`KartuPelajarMassal_${Date.now()}.pdf`);
+              addNotification('File PDF Siap Cetak berhasil diunduh!', 'success');
+            } catch (err) {
+              console.error(err);
+              addNotification('Gagal mengunduh PDF. Pastikan gambar valid.', 'error');
+            } finally {
+              setIsExporting(false);
+            }
+          };
+
+          return (
+            <div className="p-8 max-w-7xl mx-auto space-y-8 animate-fade-in">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                  <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                    Pengaturan & Live Preview Cetak
+                  </h2>
+                  <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Atur tata letak posisi kartu, margin kertas, serta jarak per kartu secara riil sebelum dicetak.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDirectPrint}
+                    className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all"
+                  >
+                    <Printer className="w-4 h-4" />
+                    Cetak Langsung (Print)
+                  </button>
+                  <button
+                    onClick={exportPDF}
+                    disabled={isExporting}
+                    className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all disabled:opacity-50"
+                  >
+                    <FileDown className="w-4 h-4" />
+                    {isExporting ? 'Mencetak PDF...' : 'Download PDF Siap Cetak'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div
+                  className={`lg:col-span-5 p-6 rounded-2xl border space-y-6 ${
+                    isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                  }`}
+                >
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Pilihan Ukuran Kertas</h3>
+                    <div className="grid grid-cols-3 gap-2">
+                      <button
+                        onClick={() => setPaperSize('a4')}
+                        className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                          paperSize === 'a4'
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : isDarkMode
+                            ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            : 'bg-slate-50 border-slate-200 text-slate-600'
+                        }`}
+                      >
+                        A4 (210×297)
+                      </button>
+                      <button
+                        onClick={() => setPaperSize('f4')}
+                        className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                          paperSize === 'f4'
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : isDarkMode
+                            ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            : 'bg-slate-50 border-slate-200 text-slate-600'
+                        }`}
+                      >
+                        F4 (215×330)
+                      </button>
+                      <button
+                        onClick={() => setPaperSize('custom')}
+                        className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                          paperSize === 'custom'
+                            ? 'bg-blue-600 border-blue-500 text-white'
+                            : isDarkMode
+                            ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
+                            : 'bg-slate-50 border-slate-200 text-slate-600'
+                        }`}
+                      >
+                        Custom (mm)
+                      </button>
+                    </div>
+
+                    {paperSize === 'custom' && (
+                      <div className="grid grid-cols-2 gap-3 mt-3 animate-fade-in">
+                        <div>
+                          <label className="text-[11px] text-slate-400 block mb-1">Lebar Kertas (mm)</label>
+                          <input
+                            type="number"
+                            value={customWidthMm}
+                            onChange={(e) => setCustomWidthMm(Number(e.target.value))}
+                            className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                              isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-400 block mb-1">Tinggi Kertas (mm)</label>
+                          <input
+                            type="number"
+                            value={customHeightMm}
+                            onChange={(e) => setCustomHeightMm(Number(e.target.value))}
+                            className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                              isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          />
+                        </div>
+                      </div>
                     )}
                   </div>
-                );
-              })}
+
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                      2. Jumlah Kartu per Lembar
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Jumlah Kolom (Cards/Row)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="5"
+                          value={cols}
+                          onChange={(e) => setCols(Math.max(1, Number(e.target.value)))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Jumlah Baris (Cards/Column)</label>
+                        <input
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={rows}
+                          onChange={(e) => setRows(Math.max(1, Number(e.target.value)))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                      3. Margin & Jarak Per Kartu (mm)
+                    </h3>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Margin Atas (mm)</label>
+                        <input
+                          type="number"
+                          value={marginTopMm}
+                          onChange={(e) => setMarginTopMm(Number(e.target.value))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Margin Samping (mm)</label>
+                        <input
+                          type="number"
+                          value={marginLeftMm}
+                          onChange={(e) => setMarginLeftMm(Number(e.target.value))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Gap Horizontal (Gap X mm)</label>
+                        <input
+                          type="number"
+                          value={gapXMm}
+                          onChange={(e) => setGapXMm(Number(e.target.value))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[11px] text-slate-400 block mb-1">Gap Vertikal (Gap Y mm)</label>
+                        <input
+                          type="number"
+                          value={gapYMm}
+                          onChange={(e) => setGapYMm(Number(e.target.value))}
+                          className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                            isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">
+                      4. Perataan & Geser Posisi Kartu
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2">
+                        <button
+                          onClick={() => setGridAlign('left')}
+                          className={`py-2 px-3 rounded-xl border text-xs font-semibold ${
+                            gridAlign === 'left'
+                              ? 'bg-blue-600 border-blue-500 text-white'
+                              : isDarkMode
+                              ? 'bg-slate-900 border-slate-800 text-slate-400'
+                              : 'bg-slate-50 border-slate-200 text-slate-600'
+                          }`}
+                        >
+                          Rata Kiri Margin
+                        </button>
+                        <button
+                          onClick={() => setGridAlign('center')}
+                          className={`py-2 px-3 rounded-xl border text-xs font-semibold ${
+                            gridAlign === 'center'
+                              ? 'bg-blue-600 border-blue-500 text-white'
+                              : isDarkMode
+                              ? 'bg-slate-900 border-slate-800 text-slate-400'
+                              : 'bg-slate-50 border-slate-200 text-slate-600'
+                          }`}
+                        >
+                          Presisi Tengah (Center)
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[11px] text-slate-400 block mb-1">Geser Offset X (+/- mm)</label>
+                          <input
+                            type="number"
+                            value={offsetX}
+                            onChange={(e) => setOffsetX(Number(e.target.value))}
+                            className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                              isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] text-slate-400 block mb-1">Geser Offset Y (+/- mm)</label>
+                          <input
+                            type="number"
+                            value={offsetY}
+                            onChange={(e) => setOffsetY(Number(e.target.value))}
+                            className={`w-full p-2 rounded-xl text-xs border outline-none ${
+                              isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          />
+                        </div>
+                      </div>
+
+                      <label className="flex items-center gap-2 cursor-pointer pt-1 text-xs">
+                        <input
+                          type="checkbox"
+                          checked={showCropMarks}
+                          onChange={(e) => setShowCropMarks(e.target.checked)}
+                          className="rounded text-blue-600"
+                        />
+                        <span>Tampilkan Garis Potong (Crop Marks)</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-7 flex flex-col items-center space-y-4">
+                  <div className="flex items-center justify-between w-full max-w-lg px-2">
+                    <span className="text-xs font-bold text-slate-400">
+                      Live Preview Lembar {activePreviewPage + 1} / {totalPages}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        disabled={activePreviewPage === 0}
+                        onClick={() => setActivePreviewPage((p) => p - 1)}
+                        className="px-3 py-1 rounded-lg border border-slate-800 text-xs font-semibold disabled:opacity-40"
+                      >
+                        Hal. Prev
+                      </button>
+                      <button
+                        disabled={activePreviewPage >= totalPages - 1}
+                        onClick={() => setActivePreviewPage((p) => p + 1)}
+                        className="px-3 py-1 rounded-lg border border-slate-800 text-xs font-semibold disabled:opacity-40"
+                      >
+                        Hal. Next
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="overflow-auto max-w-full p-4 bg-slate-900/60 rounded-3xl border border-slate-800 flex justify-center">
+                    <div
+                      className="relative bg-white text-slate-900 shadow-2xl transition-all border border-slate-300"
+                      style={{
+                        width: `${currentPaper.w * previewScale}px`,
+                        height: `${currentPaper.h * previewScale}px`
+                      }}
+                    >
+                      {currentPageStudents.map((student, idx) => {
+                        const colIdx = idx % cols;
+                        const rowIdx = Math.floor(idx / cols);
+                        const posX = computedMarginLeft + colIdx * (cardDesign.widthMm + gapXMm);
+                        const posY = computedMarginTop + rowIdx * (cardDesign.heightMm + gapYMm);
+
+                        return (
+                          <div
+                            key={student.id}
+                            className="absolute shadow-sm border border-slate-300 overflow-hidden"
+                            style={{
+                              left: `${posX * previewScale}px`,
+                              top: `${posY * previewScale}px`,
+                              width: `${cardDesign.widthMm * previewScale}px`,
+                              height: `${cardDesign.heightMm * previewScale}px`,
+                              background:
+                                cardDesign.background.type === 'color'
+                                  ? cardDesign.background.color
+                                  : cardDesign.background.type === 'gradient'
+                                  ? cardDesign.background.gradient
+                                  : '#0f172a'
+                            }}
+                          >
+                            {cardDesign.background.type === 'image' && cardDesign.background.image && (
+                              <img
+                                src={cardDesign.background.image}
+                                alt="bg"
+                                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                              />
+                            )}
+
+                            {cardDesign.elements.map((el) => {
+                              const scaleFactor = (cardDesign.widthMm * previewScale) / (cardDesign.widthMm * 3.78);
+                              return (
+                                <div
+                                  key={el.id}
+                                  className="absolute pointer-events-none"
+                                  style={{
+                                    left: `${el.x * scaleFactor}px`,
+                                    top: `${el.y * scaleFactor}px`,
+                                    width: el.width ? `${el.width * scaleFactor}px` : undefined,
+                                    height: el.height ? `${el.height * scaleFactor}px` : undefined,
+                                    zIndex: el.zIndex || 1
+                                  }}
+                                >
+                                  {el.type === 'shape' && (
+                                    <div
+                                      style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        backgroundColor: el.fill,
+                                        opacity: (el.opacity || 100) / 100,
+                                        borderRadius: `${(el.borderRadius || 0) * scaleFactor}px`
+                                      }}
+                                    />
+                                  )}
+                                  {(el.type === 'text' || el.type === 'placeholder') && (
+                                    <div
+                                      style={{
+                                        fontSize: `${el.fontSize * scaleFactor}px`,
+                                        fontWeight: el.fontWeight,
+                                        fontFamily: el.fontFamily,
+                                        color: el.color,
+                                        textAlign: el.textAlign
+                                      }}
+                                    >
+                                      {renderPlaceholderText(el.content, student)}
+                                    </div>
+                                  )}
+                                  {el.type === 'photo' && (
+                                    <div
+                                      className="bg-slate-800 flex items-center justify-center text-[8px] text-slate-400 font-bold border border-blue-500/40"
+                                      style={{ width: '100%', height: '100%', borderRadius: '2px' }}
+                                    >
+                                      FOTO
+                                    </div>
+                                  )}
+                                  {el.type === 'image' && (
+                                    <img
+                                      src={el.src}
+                                      alt={el.name}
+                                      style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                                    />
+                                  )}
+                                  {el.type === 'qrcode' && (
+                                    <div
+                                      className="bg-white p-0.5 rounded flex items-center justify-center"
+                                      style={{ width: '100%', height: '100%' }}
+                                    >
+                                      <QrCode className="w-full h-full text-slate-900" />
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+
+                            {showCropMarks && (
+                              <>
+                                <div className="absolute top-0 left-0 w-2 h-[0.5px] bg-slate-500" />
+                                <div className="absolute top-0 left-0 w-[0.5px] h-2 bg-slate-500" />
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
