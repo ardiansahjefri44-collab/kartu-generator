@@ -159,10 +159,10 @@
           },
           elements: [
             { id: 'photo-frame', type: 'photo', name: 'Frame Foto Siswa', x: 230, y: 70, width: 70, height: 95, borderColor: '#15803d', borderWidth: 2, borderRadius: 4, locked: false, zIndex: 2 },
-            { id: 'label-nama', type: 'placeholder', name: 'Placeholder Nama', content: 'NAMA : [NAMA]', x: 25, y: 80, fontSize: 11, fontWeight: 'bold', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
-            { id: 'label-kelas', type: 'placeholder', name: 'Placeholder Kelas', content: 'KELAS : [KELAS]', x: 25, y: 100, fontSize: 10, fontWeight: 'semibold', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
-            { id: 'label-ruang', type: 'placeholder', name: 'Placeholder Ruang', content: 'NO. RUANG : [NOMOR RUANG]', x: 25, y: 118, fontSize: 10, fontWeight: 'normal', fontFamily: 'Inter', color: '#064e3b', locked: false, zIndex: 2 },
-            { id: 'label-peserta', type: 'placeholder', name: 'Placeholder No Peserta', content: 'NO. PESERTA : [NOMOR PESERTA]', x: 25, y: 136, fontSize: 10, fontWeight: 'bold', fontFamily: 'Inter', color: '#047857', locked: false, zIndex: 2 },
+            { id: 'label-nama', type: 'placeholder', name: 'Placeholder Nama', content: 'NAMA : [NAMA]', x: 25, y: 80, fontSize: 11, fontWeight: 'bold', fontFamily: 'Inter', color: '#111827', locked: false, zIndex: 2 },
+            { id: 'label-kelas', type: 'placeholder', name: 'Placeholder Kelas', content: 'KELAS : [KELAS]', x: 25, y: 100, fontSize: 10, fontWeight: 'semibold', fontFamily: 'Inter', color: '#111827', locked: false, zIndex: 2 },
+            { id: 'label-ruang', type: 'placeholder', name: 'Placeholder Ruang', content: 'NO. RUANG : [NOMOR RUANG]', x: 25, y: 118, fontSize: 10, fontWeight: 'normal', fontFamily: 'Inter', color: '#111827', locked: false, zIndex: 2 },
+            { id: 'label-peserta', type: 'placeholder', name: 'Placeholder No Peserta', content: 'NO. PESERTA : [NOMOR PESERTA]', x: 25, y: 136, fontSize: 10, fontWeight: 'bold', fontFamily: 'Inter', color: '#111827', locked: false, zIndex: 2 },
             { id: 'qr-code', type: 'qrcode', name: 'QR Code Siswa', x: 235, y: 170, width: 32, height: 32, locked: false, zIndex: 2 }
           ]
         };
@@ -551,7 +551,7 @@
               fontSize: 12,
               fontWeight: 'normal',
               fontFamily: 'Inter',
-              color: '#ffffff',
+              color: '#111827',
               textAlign: 'left',
               locked: false,
               zIndex: cardDesign.elements.length + 1
@@ -616,6 +616,42 @@
                     >
                       <Sliders className="w-4 h-4 text-indigo-400" />
                       Tag Dynamic
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Orientasi Kartu</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        if (cardDesign.orientation !== 'landscape') {
+                          setCardDesign(prev => ({ ...prev, orientation: 'landscape', widthMm: 85.6, heightMm: 54 }));
+                        }
+                      }}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all ${
+                        cardDesign.orientation === 'landscape' 
+                          ? 'bg-blue-600/20 border-blue-500 text-blue-400' 
+                          : 'border-slate-800 hover:bg-slate-800/50 text-slate-400'
+                      }`}
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Landscape
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (cardDesign.orientation !== 'portrait') {
+                          setCardDesign(prev => ({ ...prev, orientation: 'portrait', widthMm: 54, heightMm: 85.6 }));
+                        }
+                      }}
+                      className={`p-2.5 rounded-xl border text-xs font-semibold flex flex-col items-center gap-1.5 transition-all ${
+                        cardDesign.orientation === 'portrait' 
+                          ? 'bg-blue-600/20 border-blue-500 text-blue-400' 
+                          : 'border-slate-800 hover:bg-slate-800/50 text-slate-400'
+                      }`}
+                    >
+                      <LayoutDashboard className="w-4 h-4 rotate-90" />
+                      Portrait
                     </button>
                   </div>
                 </div>
@@ -818,7 +854,7 @@
                             <label className="text-slate-400 block mb-1">Warna Teks</label>
                             <input
                               type="color"
-                              value={selectedElement.color || '#ffffff'}
+                              value={selectedElement.color || '#111827'}
                               onChange={(e) => updateSelectedElement('color', e.target.value)}
                               className="w-full h-8 rounded-lg cursor-pointer bg-transparent border-0"
                             />
@@ -1350,7 +1386,7 @@
                       elDiv.style.fontSize = `${(el.fontSize * 0.75).toFixed(2)}pt`;
                       elDiv.style.fontWeight = el.fontWeight || 'normal';
                       elDiv.style.fontFamily = el.fontFamily || 'sans-serif';
-                      elDiv.style.color = el.color || '#ffffff';
+                      elDiv.style.color = el.color || '#111827';
                       elDiv.style.textAlign = el.textAlign || 'left';
                       elDiv.innerText = renderPlaceholderText(el.content, student);
                     } else if (el.type === 'photo') {
